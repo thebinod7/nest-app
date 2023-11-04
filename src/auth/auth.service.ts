@@ -9,5 +9,7 @@ export class AuthService {
     return 'Hello gotcha!';
   }
 
-  singup() {}
+  singup() {
+    return { msg: 'Hello signup' };
+  }
 }
