@@ -82,13 +82,22 @@ describe('App e2e', () => {
           .spec()
           .post('/auth/login')
           .withBody(dto)
-          .expectStatus(200);
+          .expectStatus(200)
+          .stores('userToken', 'access_token');
       });
     });
   });
 
   describe('User', () => {
-    describe('Get Me', () => {});
+    describe('Get Me', () => {
+      it('Should get current user', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({ Authorization: `Bearer $S{userToken}` })
+          .expectStatus(200);
+      });
+    });
     describe('Edit User', () => {});
   });
 
