@@ -5,14 +5,23 @@ import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
+// TODO: Fix AuthDto interface
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
-  login() {
-    return 'Hello gotcha!';
+  async login(dto: any) {
+    try {
+      const doc = this.prisma.user.findUnique({ where: { email: dto.email } });
+      if (!doc) throw new ForbiddenException('User not found!');
+      const match = await argon.verify((await doc).hash, dto.password);
+      if (!match) throw new ForbiddenException('Password did not match!');
+      delete (await doc).hash;
+      return doc;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  // TODO: Fix AuthDto interface
   async singup(dto: any) {
     try {
       const hash = await argon.hash(dto.password);
