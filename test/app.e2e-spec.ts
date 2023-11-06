@@ -98,7 +98,22 @@ describe('App e2e', () => {
           .expectStatus(200);
       });
     });
-    describe('Edit User', () => {});
+    describe('Edit User', () => {
+      const editUserDto = {
+        firstName: 'Vlad',
+        email: 'vlad@mail.com',
+      };
+      it('Should update user', () => {
+        return pactum
+          .spec()
+          .patch('/users')
+          .withHeaders({ Authorization: `Bearer $S{userToken}` })
+          .withBody(editUserDto)
+          .expectStatus(200)
+          .expectBodyContains(editUserDto.email)
+          .expectBodyContains(editUserDto.firstName);
+      });
+    });
   });
 
   describe('Bookmark', () => {
