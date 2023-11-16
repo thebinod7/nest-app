@@ -27,9 +27,11 @@ export type AppAbility = MongoAbility<PossibleAbilities, Conditions>;
 @Injectable()
 export class AbilityFactory {
   definAbility(user: User) {
-    const { can, cannot, build } = new AbilityBuilder(
-      createMongoAbility<PossibleAbilities, Conditions>,
-    );
+    // const { can, cannot, build } = new AbilityBuilder(
+    //   createMongoAbility<PossibleAbilities, Conditions>,
+    // );
+
+    const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
     if (user.isAdmin) can(Action.Manage, 'all');
     else can(Action.Read, 'all');

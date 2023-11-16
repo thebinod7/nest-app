@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Patch,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 // import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
@@ -27,9 +35,13 @@ export class UserController {
   }
 
   @Get('all')
-  @UseGuards(AbilityGuard)
+  // @UseGuards(AbilityGuard)
   @checkAbilities({ action: Action.Read, subject: User })
   listUsers(@GetUser() user: User) {
+    // const u = { id: 1, isAdmin: false };
+    // const ability = this.abFactory.definAbility(u);
+    // const allowed = ability.can(Action.Read, u);
+    // if (!allowed) throw new ForbiddenException('Only Admin');
     return { message: 'ALl users' };
   }
 
