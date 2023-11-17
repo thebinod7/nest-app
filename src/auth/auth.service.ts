@@ -27,13 +27,13 @@ export class AuthService {
     }
   }
 
-  async singup(dto: any) {
+  async singup(dto: AuthDto) {
     try {
       const hash = await argon.hash(dto.password);
 
       const user = await this.prisma.user.create({
         data: {
-          roleId: 1,
+          roleId: +dto.roleId,
           email: dto.email,
           hash,
         },
