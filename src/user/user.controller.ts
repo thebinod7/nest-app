@@ -4,6 +4,8 @@ import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
+import { AbilitiesGuard } from 'src/ability/ability.guard';
+import { checkAbilites } from 'src/ability/ability.decorator';
 
 // @UseGuards(JwtGuard)
 @Controller('users')
@@ -14,8 +16,10 @@ export class UserController {
     return user;
   }
 
+  @checkAbilites({ action: 'manage', subject: 'all' })
+  @UseGuards(JwtGuard, AbilitiesGuard)
   @Get('')
-  listAll(@GetUser() user: User) {
+  listAll() {
     return this.userService.listUsers();
   }
 
