@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
@@ -6,6 +6,7 @@ import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 import { AbilitiesGuard } from 'src/ability/ability.guard';
 import { checkAbilites } from 'src/ability/ability.decorator';
+import { ACTIONS, SUBJECTS } from '../constants';
 
 // @UseGuards(JwtGuard)
 @Controller('users')
@@ -16,7 +17,7 @@ export class UserController {
     return user;
   }
 
-  @checkAbilites({ action: 'manage', subject: 'all' })
+  @checkAbilites({ action: ACTIONS.MANAGE, subject: SUBJECTS.ALL })
   @UseGuards(JwtGuard, AbilitiesGuard)
   @Get('')
   listAll() {

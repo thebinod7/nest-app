@@ -61,7 +61,6 @@ export class AbilitiesGuard implements CanActivate {
       this.reflector.get<RequiredRule[]>(CHECK_ABILITY, context.getHandler()) ||
       [];
 
-    console.log('C==>', context.switchToHttp().getRequest());
     const currentUser: User = context.switchToHttp().getRequest().user;
     console.log('Current=>', currentUser);
     const request: FastifyRequest = context.switchToHttp().getRequest();
