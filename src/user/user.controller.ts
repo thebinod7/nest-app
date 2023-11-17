@@ -35,7 +35,7 @@ export class UserController {
   }
 
   @Get('all')
-  // @UseGuards(AbilityGuard)
+  @UseGuards(AbilityGuard)
   @checkAbilities({ action: Action.Read, subject: User })
   listUsers(@GetUser() user: User) {
     // const u = { id: 1, isAdmin: false };
