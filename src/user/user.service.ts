@@ -20,4 +20,8 @@ export class UserService {
       throw err;
     }
   }
+
+  async listUsers() {
+    return this.prisma.user.findMany();
+  }
 }

@@ -10,6 +10,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id         Int       @unique @default(autoincrement())
+  name       String    @db.VarChar()
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt()
+  deletedAt DateTime? @db.Timestamp()
+
+  Permission Permission[]
+  User       User[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id         Int     @unique @default(autoincrement())
+  role       Role    @relation(fields: [roleId], references: [id])
+  roleId    Int     @db.Integer()
+  action     String  @db.VarChar()
+  subject    String  @db.VarChar()
+  inverted   Boolean @default(false)
+  conditions Json?   @db.JsonB()
+  reason     String? @db.Text()
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("permissions")
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -22,8 +52,25 @@ model User {
   lastName  String?
   bookmarks  Bookmark[]
 
+  role    Role @relation(fields: [roleId], references: [id])
+  roleId Int  @db.Integer()
+
+  stories       Story[]
+
   @@map("users")
 }
+
+
+model Story {
+  id   Int    @unique @default(autoincrement())
+  name String @db.VarChar()
+
+  author   User @relation(fields: [created_by], references: [id])
+  created_by   Int  @db.Integer()
+
+  @@map("stories")
+}
+
 
 model Bookmark {
   id        Int      @id @default(autoincrement())

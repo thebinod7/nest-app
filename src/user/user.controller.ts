@@ -5,13 +5,18 @@ import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 
-@UseGuards(JwtGuard) // For all endpoints
+// @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
   @Get('me')
   getMe(@GetUser() user: User) {
     return user;
+  }
+
+  @Get('')
+  listAll(@GetUser() user: User) {
+    return this.userService.listUsers();
   }
 
   @Patch()
