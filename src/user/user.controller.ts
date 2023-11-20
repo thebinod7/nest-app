@@ -13,6 +13,7 @@ import { ACTIONS, SUBJECTS } from '../constants';
 export class UserController {
   constructor(private userService: UserService) {}
   @Get('me')
+  @UseGuards(JwtGuard, AbilitiesGuard)
   getMe(@GetUser() user: User) {
     return user;
   }
