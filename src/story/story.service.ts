@@ -10,10 +10,19 @@ export class StoryService {
     return this.prisma.story.create({ data: payload });
   }
 
-  update(payload: any) {
-    return this.prisma.story.create({
-      data: payload,
-    });
+  async edit(storyId: number, dto: any) {
+    console.log({ storyId });
+    try {
+      const doc = await this.prisma.story.update({
+        where: {
+          id: storyId,
+        },
+        data: { ...dto },
+      });
+      return doc;
+    } catch (err) {
+      throw err;
+    }
   }
 
   list() {

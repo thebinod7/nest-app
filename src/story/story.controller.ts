@@ -1,7 +1,18 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { StoryService } from './story.service';
 import { JwtGuard } from 'src/auth/guard';
 import { GetUser } from 'src/auth/decorator';
+import { checkAbilites } from 'src/ability/ability.decorator';
+import { ACTIONS, SUBJECTS } from 'src/constants';
+import { AbilitiesGuard } from 'src/ability/ability.guard';
 
 @Controller('story')
 export class StoryController {
@@ -19,6 +30,11 @@ export class StoryController {
     return this.storyService.create(payload);
   }
 
-  @Patch()
-  update() {}
+  @checkAbilites({ action: ACTIONS.UPDATE, subject: SUBJECTS.STORY })
+  @UseGuards(JwtGuard, AbilitiesGuard)
+  @Patch(':id')
+  update(@GetUser() user: any, @Param() params: any, @Body() payload: any) {
+    const storyId = +params.id;
+    return this.storyService.edit(storyId, payload);
+  }
 }
