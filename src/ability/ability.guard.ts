@@ -57,12 +57,12 @@ export class AbilitiesGuard implements CanActivate {
     createMongoAbility<AppAbility>(rules);
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    // Required rules sent from controller
     const rules: any =
       this.reflector.get<RequiredRule[]>(CHECK_ABILITY, context.getHandler()) ||
       [];
 
     const currentUser: User = context.switchToHttp().getRequest().user;
-    console.log('Current=>', currentUser);
     const request: FastifyRequest = context.switchToHttp().getRequest();
 
     const userPermissions = await this.prisma.permission.findMany({
@@ -77,11 +77,13 @@ export class AbilitiesGuard implements CanActivate {
     );
 
     try {
+      // Ability calculated based on permissions
       const ability = this.createAbility(Object(parsedUserPermissions));
 
       for await (const rule of rules) {
         let sub = {};
-        if (size(rule?.conditions)) {
+        //prev: size(rule?.conditions)
+        if (rule?.conditions) {
           const subId = +request.params['id'];
           sub = await this.getSubjectById(subId, rule.subject);
         }
@@ -102,6 +104,7 @@ export class AbilitiesGuard implements CanActivate {
   parseCondition(permissions: any, currentUser: User) {
     const data = map(permissions, (permission) => {
       if (size(permission.conditions)) {
+        // Attach authorID if matchaes currentUser
         const parsedVal = Mustache.render(
           permission.conditions['author'],
           currentUser,

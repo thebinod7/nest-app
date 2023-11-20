@@ -36,18 +36,18 @@ export const permissions = [
 export const users = [
   {
     id: 1,
-    firstName: 'Raktim',
-    lastName: 'Shrestha',
+    firstName: 'Binod',
+    lastName: 'Chaudhary',
     roleId: 1,
-    email: 'raktim@mailinator.com',
+    email: 'binod@mailinator.com',
     hash: 'hello123',
   },
   {
     id: 2,
-    firstName: 'Raktim',
-    lastName: 'Rumsan',
+    firstName: 'John',
+    lastName: 'Doe',
     roleId: 2,
-    email: 'raktim@rumsan.com',
+    email: 'john@mailinator.com',
     hash: 'hello123',
   },
 ];

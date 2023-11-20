@@ -11,7 +11,6 @@ export class StoryService {
   }
 
   async edit(storyId: number, dto: any) {
-    console.log({ storyId });
     try {
       const doc = await this.prisma.story.update({
         where: {

@@ -8,6 +8,6 @@ export const ACTIONS = {
 
 export const SUBJECTS = {
   ALL: 'all',
-  USER: 'user',
-  STORY: 'story',
+  USER: 'User',
+  STORY: 'Story',
 };

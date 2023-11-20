@@ -23,6 +23,10 @@ export class StoryController {
     return this.storyService.list();
   }
 
+  @checkAbilites({
+    action: ACTIONS.CREATE,
+    subject: SUBJECTS.STORY,
+  })
   @UseGuards(JwtGuard)
   @Post()
   create(@GetUser('id') userId: number, @Body() payload: any) {
@@ -30,7 +34,11 @@ export class StoryController {
     return this.storyService.create(payload);
   }
 
-  @checkAbilites({ action: ACTIONS.UPDATE, subject: SUBJECTS.STORY })
+  @checkAbilites({
+    action: ACTIONS.READ,
+    subject: SUBJECTS.STORY,
+    conditions: true,
+  })
   @UseGuards(JwtGuard, AbilitiesGuard)
   @Patch(':id')
   update(@GetUser() user: any, @Param() params: any, @Body() payload: any) {
