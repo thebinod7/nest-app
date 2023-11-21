@@ -1,11 +1,11 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as argon from 'argon2';
-
+import { totp } from 'otplib';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto, LoginDto } from './dto';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
+import { EMAIL_TEMPLATES } from '../constants';
 
 // TODO: Fix AuthDto interface
 @Injectable()
@@ -31,6 +31,7 @@ export class AuthService {
 
   async saveAndSendOTP(dto: any) {
     try {
+      const OTP_SECRET = this.config.get('OTP_SECRET');
       dto.roleId = 2;
       console.log('DTO=>', dto);
       // Upsert user by authAddress and authType
@@ -42,13 +43,16 @@ export class AuthService {
         create: dto,
       });
       // Send OTP
+      const token = totp.generate(OTP_SECRET);
+      const context = {
+        name: dto.firstName,
+        to: dto.authAddress,
+        template: EMAIL_TEMPLATES.LOGIN,
+        subject: 'OTP for login',
+      };
+
       // Send respose
-      await this.mailSevice.sendUserConfirmation(
-        {
-          name: 'JHon',
-        },
-        '12343534',
-      );
+      await this.mailSevice.sendUserConfirmation(context, token);
       return user;
     } catch (err) {
       throw err;

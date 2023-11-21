@@ -6,16 +6,14 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendUserConfirmation(user: any, token: string) {
-    const url = `example.com/auth/confirm?token=${token}`;
-
+  async sendUserConfirmation(context: any, token: string) {
     await this.mailerService.sendMail({
-      to: 'binod@mailinator.com',
-      subject: 'Welcome to Nice App! Confirm your Email',
-      template: 'welcome',
+      to: context.to,
+      subject: context.subject || 'Subject not sent',
+      template: context.template,
       context: {
-        name: user.name,
-        url,
+        name: context.name,
+        token,
       },
     });
   }

@@ -11,3 +11,7 @@ export const SUBJECTS = {
   USER: 'User',
   STORY: 'Story',
 };
+
+export const EMAIL_TEMPLATES = {
+  LOGIN: 'login',
+};
