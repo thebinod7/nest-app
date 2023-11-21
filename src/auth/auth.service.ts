@@ -5,6 +5,7 @@ import * as argon from 'argon2';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto, LoginDto } from './dto';
 import { ConfigService } from '@nestjs/config';
+import { MailService } from '../mail/mail.service';
 
 // TODO: Fix AuthDto interface
 @Injectable()
@@ -13,6 +14,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private mailSevice: MailService,
   ) {}
 
   async login(dto: any) {
@@ -41,6 +43,12 @@ export class AuthService {
       });
       // Send OTP
       // Send respose
+      await this.mailSevice.sendUserConfirmation(
+        {
+          name: 'JHon',
+        },
+        '12343534',
+      );
       return user;
     } catch (err) {
       throw err;
