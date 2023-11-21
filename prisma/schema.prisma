@@ -10,9 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ===================Role Model==================
 model Role {
   id         Int       @unique @default(autoincrement())
   name       String    @db.VarChar()
+  isSystem   Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt()
   deletedAt DateTime? @db.Timestamp()
@@ -23,6 +25,7 @@ model Role {
   @@map("roles")
 }
 
+// ===================Permission Model==================
 model Permission {
   id         Int     @unique @default(autoincrement())
   role       Role    @relation(fields: [roleId], references: [id])
@@ -40,16 +43,17 @@ model Permission {
   @@map("permissions")
 }
 
+// ===================User Model==================
 model User {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  authAddress       String @unique
+  authAddress String @unique
   authType    AuthType @default(EMAIL)  
 
-  firstName String?
-  lastName  String?
+  firstName   String?
+  lastName    String?
 
   role    Role @relation(fields: [roleId], references: [id])
   roleId Int  @db.Integer()

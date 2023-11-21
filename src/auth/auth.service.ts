@@ -1,10 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto } from './dto';
+import { AuthDto, LoginDto } from './dto';
 import { ConfigService } from '@nestjs/config';
 
 // TODO: Fix AuthDto interface
@@ -15,40 +14,59 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
   ) {}
+
   async login(dto: any) {
     try {
-      const doc = this.prisma.user.findUnique({ where: { email: dto.email } });
-      if (!doc) throw new ForbiddenException('User not found!');
-      const match = await argon.verify((await doc).hash, dto.password);
-      if (!match) throw new ForbiddenException('Password did not match!');
-      return this.signToken((await doc).id, (await doc).email);
+      // const doc = this.prisma.user.findUnique({ where: { email: dto.email } });
+      // if (!doc) throw new ForbiddenException('User not found!');
+      // const match = await argon.verify((await doc).hash, dto.password);
+      // if (!match) throw new ForbiddenException('Password did not match!');
+      // return this.signToken((await doc).id, (await doc).email);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async saveAndSendOTP(dto: any) {
+    try {
+      dto.roleId = 2;
+      console.log('DTO=>', dto);
+      // Upsert user by authAddress and authType
+      const user = await this.prisma.user.upsert({
+        where: {
+          authAddress: dto.authAddress,
+        },
+        update: { roleId: dto.roleId },
+        create: dto,
+      });
+      // Send OTP
+      // Send respose
+      return user;
     } catch (err) {
       throw err;
     }
   }
 
   async singup(dto: AuthDto) {
-    try {
-      const hash = await argon.hash(dto.password);
-
-      const user = await this.prisma.user.create({
-        data: {
-          roleId: +dto.roleId,
-          email: dto.email,
-          hash,
-        },
-      });
-
-      delete user.hash;
-      return user;
-    } catch (err) {
-      if (err instanceof PrismaClientKnownRequestError) {
-        if (err.code === 'P2002') {
-          throw new ForbiddenException('Email taken!');
-        }
-        throw err;
-      }
-    }
+    // try {
+    //   const hash = await argon.hash(dto.password);
+    //   const user = await this.prisma.user.create({
+    //     data: {
+    //       roleId: +dto.roleId,
+    //       email: dto.email,
+    //       hash,
+    //     },
+    //   });
+    //   delete user.hash;
+    //   return user;
+    // } catch (err) {
+    //   if (err instanceof PrismaClientKnownRequestError) {
+    //     if (err.code === 'P2002') {
+    //       throw new ForbiddenException('Email taken!');
+    //     }
+    //     throw err;
+    //   }
+    // }
   }
 
   async signToken(

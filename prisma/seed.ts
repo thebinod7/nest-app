@@ -39,16 +39,14 @@ export const users = [
     firstName: 'Binod',
     lastName: 'Chaudhary',
     roleId: 1,
-    email: 'binod@mailinator.com',
-    hash: 'hello123',
+    authAddress: 'binod@mailinator.com',
   },
   {
     id: 2,
     firstName: 'John',
     lastName: 'Doe',
     roleId: 2,
-    email: 'john@mailinator.com',
-    hash: 'hello123',
+    authAddress: 'john@mailinator.com',
   },
 ];
 

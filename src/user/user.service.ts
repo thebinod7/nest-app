@@ -8,14 +8,14 @@ export class UserService {
 
   async editUser(userId: number, dto: EditUserDto) {
     try {
-      const user = await this.prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: { ...dto },
-      });
-      delete user.hash;
-      return user;
+      // const user = await this.prisma.user.update({
+      //   where: {
+      //     id: userId,
+      //   },
+      //   data: { ...dto },
+      // });
+      // delete user.hash;
+      // return user;
     } catch (err) {
       throw err;
     }
