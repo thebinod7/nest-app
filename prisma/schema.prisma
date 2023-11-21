@@ -41,48 +41,24 @@ model Permission {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  email String @unique
-  hash  String
+  authAddress       String @unique
+  authType    AuthType @default(EMAIL)  
 
   firstName String?
   lastName  String?
-  bookmarks  Bookmark[]
 
   role    Role @relation(fields: [roleId], references: [id])
   roleId Int  @db.Integer()
 
-  stories       Story[]
-
   @@map("users")
 }
 
-
-model Story {
-  id   Int    @unique @default(autoincrement())
-  name String @db.VarChar()
-
-  author   User @relation(fields: [created_by], references: [id])
-  created_by   Int  @db.Integer()
-
-  @@map("stories")
-}
-
-
-model Bookmark {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  title       String
-  description String?
-  link        String
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-
-  @@map("bookmarks")
+enum AuthType {
+  EMAIL
+  PHONE
+  WALLET
 }

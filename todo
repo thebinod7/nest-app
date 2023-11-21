@@ -1,6 +1,8 @@
 Create story module ✅
 Create roles and permission module ✅
-Check permission flow
-Support wallet login (User Model)
-Support 3P login (Model)
+
+Schema cleanup
+User model cleanup (address (wallet/email/phone), authType)
+Change login mechanism
 Support condition mapping (Eg; OrgID)
+Update DB Seed
