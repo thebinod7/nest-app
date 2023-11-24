@@ -4,6 +4,7 @@ export const roles = [
   {
     id: 1,
     name: 'Admin',
+    isSystem: true
   },
   {
     id: 2,

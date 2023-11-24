@@ -17,7 +17,7 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  @Post('signin')
+  @Post('otp')
   auth(@Body() dto: LoginDto) {
     return this.authService.saveAndSendOTP(dto);
   }

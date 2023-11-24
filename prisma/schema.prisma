@@ -58,6 +58,8 @@ model User {
   role    Role @relation(fields: [roleId], references: [id])
   roleId Int  @db.Integer()
 
+  otp     Int?
+
   @@map("users")
 }
 

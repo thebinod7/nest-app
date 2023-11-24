@@ -32,27 +32,25 @@ export class AuthService {
   async saveAndSendOTP(dto: any) {
     try {
       const OTP_SECRET = this.config.get('OTP_SECRET');
-      dto.roleId = 2;
-      console.log('DTO=>', dto);
+      if(!dto.roleId) dto.roleId = 2;
+      const otp = totp.generate(OTP_SECRET);
       // Upsert user by authAddress and authType
       const user = await this.prisma.user.upsert({
         where: {
           authAddress: dto.authAddress,
         },
-        update: { roleId: dto.roleId },
+        update: { roleId: dto.roleId, otp: +otp},
         create: dto,
       });
-      // Send OTP
-      const token = totp.generate(OTP_SECRET);
+
+      // Send OTP and response
       const context = {
         name: dto.firstName,
         to: dto.authAddress,
         template: EMAIL_TEMPLATES.LOGIN,
         subject: 'OTP for login',
       };
-
-      // Send respose
-      await this.mailSevice.sendUserConfirmation(context, token);
+      await this.mailSevice.sendUserConfirmation(context, otp);
       return user;
     } catch (err) {
       throw err;

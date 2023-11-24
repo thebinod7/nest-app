@@ -2,13 +2,23 @@ Create story module ✅
 Create roles and permission module ✅
 Schema cleanup ✅
 User model cleanup (address (wallet/email/phone), authType) ✅
+Change login mechanism ✅
+Support condition mapping (Eg; OrgID) ✅
+Update DB Seed ✅
 
-Signup/Login using email & phone:
+# Signup/Login using email & phone:
 
 - Upsert email address and send OTP
 - Enter OTP and compare
 - Validate and create JWT
 
-Change login mechanism
-Support condition mapping (Eg; OrgID)
-Update DB Seed
+# Login using wallet
+
+# Roles CRUD API
+
+# Permissions CRUD API
+
+# Permissioned route guards
+
+# Restrict system roles deletion 
+
