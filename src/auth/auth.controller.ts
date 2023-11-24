@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, LoginDto } from './dto';
+import { AuthDto, LoginDto, OtpDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
   }
 
   @Post('otp')
-  auth(@Body() dto: LoginDto) {
+  auth(@Body() dto: OtpDto) {
     return this.authService.saveAndSendOTP(dto);
   }
 }

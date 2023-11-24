@@ -13,7 +13,7 @@ export class AuthDto {
   roleId: number;
 }
 
-export class LoginDto {
+export class OtpDto {
   @IsString()
   @IsNotEmpty()
   authAddress: string;
@@ -30,5 +30,17 @@ export class LoginDto {
 
   @IsNumber()
   roleId?: number;
+
+}
+
+
+export class LoginDto {
+  @IsString()
+  @IsNotEmpty()
+  authAddress: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  otp?: number;
 
 }

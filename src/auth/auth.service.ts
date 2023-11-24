@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
 import { EMAIL_TEMPLATES } from '../constants';
 
-// TODO: Fix AuthDto interface
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,13 +16,23 @@ export class AuthService {
     private mailSevice: MailService,
   ) {}
 
-  async login(dto: any) {
+  async login(dto: LoginDto) {
     try {
       // const doc = this.prisma.user.findUnique({ where: { email: dto.email } });
       // if (!doc) throw new ForbiddenException('User not found!');
       // const match = await argon.verify((await doc).hash, dto.password);
       // if (!match) throw new ForbiddenException('Password did not match!');
       // return this.signToken((await doc).id, (await doc).email);
+      const OTP_SECRET = this.config.get('OTP_SECRET');
+      const otpStr = dto.otp.toString();
+      const isValid = totp.check(otpStr, OTP_SECRET);
+      if(!isValid) throw new ForbiddenException('OTP did not match!');
+      // Get user by authAddress
+      const user = await this.prisma.user.findUnique({where: {authAddress:dto.authAddress} });
+      if(!user) throw new ForbiddenException('User not found!');
+      delete user.otp;
+      // Sign token
+      return this.signToken(user.id, user.authAddress);
     } catch (err) {
       throw err;
     }
@@ -81,11 +90,11 @@ export class AuthService {
 
   async signToken(
     userId: number,
-    email: string,
+    authAddress: string,
   ): Promise<{ access_token: string }> {
     const payload = {
       sub: userId,
-      email,
+      authAddress,
     };
     const secret = this.config.get('JWT_SECRET');
 
