@@ -18,11 +18,6 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     try {
-      // const doc = this.prisma.user.findUnique({ where: { email: dto.email } });
-      // if (!doc) throw new ForbiddenException('User not found!');
-      // const match = await argon.verify((await doc).hash, dto.password);
-      // if (!match) throw new ForbiddenException('Password did not match!');
-      // return this.signToken((await doc).id, (await doc).email);
       const OTP_SECRET = this.config.get('OTP_SECRET');
       const otpStr = dto.otp.toString();
       const isValid = totp.check(otpStr, OTP_SECRET);
