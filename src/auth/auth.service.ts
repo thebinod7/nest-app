@@ -3,10 +3,11 @@ import { JwtService } from '@nestjs/jwt';
 import {ethers} from 'ethers'
 import { totp } from 'otplib';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto, LoginDto } from './dto';
+import {  LoginDto, WalletLoginDto } from './dto';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
 import { EMAIL_TEMPLATES } from '../constants';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AuthService {
@@ -17,19 +18,18 @@ export class AuthService {
     private mailSevice: MailService,
   ) {}
 
-  async walletLogin(dto: any) {
-    console.log("Wallet=>", dto)
-    const messageHash = ethers?.hashMessage(ethers?.toUtf8Bytes(dto.message));
-    const walletAddress = ethers?.recoverAddress(messageHash, dto.signature);
-    if(!dto.roleId) dto.roleId = 2;
-    dto.authAddress = walletAddress
-    dto.authType = 'WALLET';
-    console.log("DTO==>",dto)
-    // Get signature from API
-    // Validate signature
-    // IF_INVALID: throw err
-    // Upsert on the basis of wallet address
-    // Send back accessToken 
+  async walletLogin(dto: WalletLoginDto) {
+    try {
+      const messageHash = ethers?.hashMessage(ethers?.toUtf8Bytes(dto.message));
+      const walletAddress = ethers?.recoverAddress(messageHash, dto.signature);
+      const user = await this.prisma.user.findUnique({where:{
+        authAddress: walletAddress
+      }})
+      if(!user) throw new ForbiddenException('User does not exist!');
+      return this.signToken(user.id, user.authAddress);
+    } catch(err){
+      throw err;
+    }
   }
 
   async login(dto: LoginDto) {
@@ -77,26 +77,20 @@ export class AuthService {
     }
   }
 
-  async singup(dto: AuthDto) {
-    // try {
-    //   const hash = await argon.hash(dto.password);
-    //   const user = await this.prisma.user.create({
-    //     data: {
-    //       roleId: +dto.roleId,
-    //       email: dto.email,
-    //       hash,
-    //     },
-    //   });
-    //   delete user.hash;
-    //   return user;
-    // } catch (err) {
-    //   if (err instanceof PrismaClientKnownRequestError) {
-    //     if (err.code === 'P2002') {
-    //       throw new ForbiddenException('Email taken!');
-    //     }
-    //     throw err;
-    //   }
-    // }
+  async singup(dto: any) {
+    try {
+      const user = await this.prisma.user.create({
+        data: dto
+      });
+      return user;
+    } catch (err) {
+      if (err instanceof PrismaClientKnownRequestError) {
+        if (err.code === 'P2002') {
+          throw new ForbiddenException('Email taken!');
+        }
+        throw err;
+      }
+    }
   }
 
   async signToken(
@@ -110,7 +104,7 @@ export class AuthService {
     const secret = this.config.get('JWT_SECRET');
 
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: '60m',
       secret: secret,
     });
 

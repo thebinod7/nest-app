@@ -1,16 +1,22 @@
 import { IsNotEmpty,  IsNumber,  IsOptional,  IsString } from 'class-validator';
 
-export class AuthDto {
+export class SignupDto {
   @IsString()
   @IsNotEmpty()
   authAddress: string;
 
   @IsString()
-  @IsNotEmpty()
   authType: string;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @IsNumber()
   roleId: number;
+
+  @IsOptional()
+  firstName: string;
+
+  @IsOptional()
+  lastName: string;
 }
 
 export class OtpDto {
@@ -46,7 +52,7 @@ export class LoginDto {
 }
 
 
-export class WalletDto {
+export class WalletLoginDto {
   @IsString()
   @IsNotEmpty()
   signature: string;
@@ -54,17 +60,4 @@ export class WalletDto {
   @IsString()
   @IsNotEmpty()
   message: string;
-
-  @IsString()
-  @IsOptional()
-  firstName?: string;
-
-  @IsString()
-  @IsOptional()
-  lastName?: string;
-
-  @IsNumber()
-  @IsOptional()
-  roleId?: number;
-
 }
