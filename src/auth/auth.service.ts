@@ -63,7 +63,6 @@ export class AuthService {
         create: dto,
       });
 
-      // Send OTP and response
       const context = {
         name: dto.firstName,
         to: dto.authAddress,
