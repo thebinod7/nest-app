@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import {ethers} from 'ethers'
 import { totp } from 'otplib';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto, LoginDto } from './dto';
@@ -15,6 +16,21 @@ export class AuthService {
     private config: ConfigService,
     private mailSevice: MailService,
   ) {}
+
+  async walletLogin(dto: any) {
+    console.log("Wallet=>", dto)
+    const messageHash = ethers?.hashMessage(ethers?.toUtf8Bytes(dto.message));
+    const walletAddress = ethers?.recoverAddress(messageHash, dto.signature);
+    if(!dto.roleId) dto.roleId = 2;
+    dto.authAddress = walletAddress
+    dto.authType = 'WALLET';
+    console.log("DTO==>",dto)
+    // Get signature from API
+    // Validate signature
+    // IF_INVALID: throw err
+    // Upsert on the basis of wallet address
+    // Send back accessToken 
+  }
 
   async login(dto: LoginDto) {
     try {
@@ -86,7 +102,7 @@ export class AuthService {
   async signToken(
     userId: number,
     authAddress: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ accessToken: string }> {
     const payload = {
       sub: userId,
       authAddress,
@@ -99,7 +115,7 @@ export class AuthService {
     });
 
     return {
-      access_token: token,
+      accessToken: token,
     };
   }
 }

@@ -1,4 +1,4 @@
-import { IsNotEmpty,  IsNumber,  IsString } from 'class-validator';
+import { IsNotEmpty,  IsNumber,  IsOptional,  IsString } from 'class-validator';
 
 export class AuthDto {
   @IsString()
@@ -42,5 +42,29 @@ export class LoginDto {
   @IsNumber()
   @IsNotEmpty()
   otp?: number;
+
+}
+
+
+export class WalletDto {
+  @IsString()
+  @IsNotEmpty()
+  signature: string;
+
+  @IsString()
+  @IsNotEmpty()
+  message: string;
+
+  @IsString()
+  @IsOptional()
+  firstName?: string;
+
+  @IsString()
+  @IsOptional()
+  lastName?: string;
+
+  @IsNumber()
+  @IsOptional()
+  roleId?: number;
 
 }
