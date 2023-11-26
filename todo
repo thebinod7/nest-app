@@ -14,6 +14,10 @@
 
 # Login using wallet  ✅
 # Roles CRUD API ✅
-# Permissions CRUD API
-# Permissioned route guards
-# Restrict system roles deletion 
+# Permissions CRUD API ✅
+# Permissioned route guards ✅
+# Restrict system roles deletion ✅
+
+# Permission enums in database schema
+# Protect Roles/Perms routes
+# Composite index/upsert in permission schema

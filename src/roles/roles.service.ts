@@ -1,12 +1,12 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateRole } from './dto';
+import { CreatePermissionDto, CreateRoleDto, UpdatePermissionDto } from './dto';
 
 @Injectable()
 export class RolesService {
   constructor(private prisma: PrismaService) {}
 
-  createRole(dto: CreateRole) {
+  createRole(dto: CreateRoleDto) {
     try {
       return this.prisma.role.create({data:dto})
     } catch(err){
@@ -15,7 +15,11 @@ export class RolesService {
   }
 
   listRoles() {
-    return this.prisma.role.findMany();
+    try {
+      return this.prisma.role.findMany();
+    } catch(err) {
+      throw err;
+    }
   }
 
   getRoleById(roleId: number) {
@@ -37,12 +41,45 @@ export class RolesService {
     return this.prisma.permission.findMany();
   }
 
-  listPermissionsByRole() {
-    return this.prisma.permission.findMany();
+  listPermissionsByRole(roleId:number) {
+    return this.prisma.permission.findMany({where:{
+      roleId
+    }});
   }
 
-  updatePermission() {}
+  createPermission(dto: CreatePermissionDto) {
+    try {
+      return this.prisma.permission.create({data:dto})
+    } catch(err){
+      throw err;
+    }
+  }
 
-  deletePermission() {}
+  async updatePermission(permId:number, dto: UpdatePermissionDto) {
+    try {
+      const perm = await this.getPermissionById(+permId);
+      if(!perm) throw new HttpException('Permission does not exist!', 500);
+      return this.prisma.permission.update({where:{
+        id: permId
+      },  data: dto })
+    } catch(err) {
+      throw err;
+    }
+  }
+
+  getPermissionById(permId: number) {
+    return this.prisma.permission.findUnique({where: {id: +permId}})
+  }
+
+
+  async deletePermission(permId:number) {
+    try {
+      const perm = await this.getPermissionById(permId);
+      if(!perm) throw new HttpException('Permission does not exist!', 500);
+      return this.prisma.permission.delete({where:{id: +permId}})
+    } catch(err) {
+      throw err;
+    }
+  }
 
 }
