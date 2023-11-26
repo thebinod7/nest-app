@@ -18,6 +18,7 @@
 # Permissioned route guards ✅
 # Restrict system roles deletion ✅
 
+# OTP long live ✅
+# Protect Users/Roles/Perms routes
 # Permission enums in database schema
-# Protect Roles/Perms routes
 # Composite index/upsert in permission schema

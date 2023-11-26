@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
 import { EMAIL_TEMPLATES } from '../constants';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+totp.options = { step: 120 };
 
 @Injectable()
 export class AuthService {
@@ -59,7 +60,7 @@ export class AuthService {
         where: {
           authAddress: dto.authAddress,
         },
-        update: { roleId: dto.roleId, otp: +otp},
+        update: {...dto, otp: +otp},
         create: dto,
       });
 
