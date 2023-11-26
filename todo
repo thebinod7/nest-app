@@ -13,7 +13,7 @@
 - Validate and create JWT
 
 # Login using wallet  ✅
-# Roles CRUD API
+# Roles CRUD API ✅
 # Permissions CRUD API
 # Permissioned route guards
 # Restrict system roles deletion 
