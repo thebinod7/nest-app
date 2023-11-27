@@ -32,7 +32,7 @@ export class RolesController {
   }
 
   @UseGuards(JwtGuard, AbilitiesGuard)
-  @CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.PERMISSION })
+  @CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.ALL })
   @Get('perms')
   listPermissions() {
     return this.roleService.listPermissions();
