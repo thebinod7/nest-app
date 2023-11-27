@@ -65,19 +65,22 @@ export class AbilitiesGuard implements CanActivate {
     const currentUser: User = context.switchToHttp().getRequest().user;
     const request: FastifyRequest = context.switchToHttp().getRequest();
 
+    // Get permissions by roleID and subject
     const userPermissions = await this.prisma.permission.findMany({
       where: {
         roleId: currentUser.roleId,
+        subject: rules[0].subject
       },
     });
 
-    const parsedUserPermissions = this.parseCondition(
-      userPermissions,
-      currentUser,
-    );
+    const perms = userPermissions.map((u) => u.action);
+    const permGrant = perms.includes(rules[0].action);
+    if(!permGrant) throw new ForbiddenException('You are not allowed to perform this action');
+   
 
     try {
       // Ability calculated based on permissions
+      const parsedUserPermissions = this.parseCondition(userPermissions,currentUser);
       const ability = this.createAbility(Object(parsedUserPermissions));
 
       for await (const rule of rules) {
