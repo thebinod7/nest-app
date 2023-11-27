@@ -26,14 +26,13 @@ export class OtpDto {
 
   @IsString()
   @IsNotEmpty()
-  authType: string;
-
-  @IsString()
   firstName?: string;
 
   @IsString()
+  @IsNotEmpty()
   lastName?: string;
 
+  @IsOptional()
   @IsNumber()
   roleId?: number;
 
@@ -47,7 +46,7 @@ export class LoginDto {
 
   @IsNumber()
   @IsNotEmpty()
-  otp?: number;
+  otp: number;
 
 }
 
