@@ -10,6 +10,10 @@ export const roles = [
     id: 2,
     name: 'User',
   },
+  {
+    id: 3,
+    name: 'Editor',
+  },
 ];
 
 export const permissions = [
@@ -23,15 +27,15 @@ export const permissions = [
     id: 2,
     roleId: 2,
     action: 'read',
-    subject: 'Story',
+    subject: 'User',
   },
-  {
-    id: 3,
-    roleId: 2,
-    action: 'manage',
-    subject: 'Story',
-    conditions: { author: '{{ id }}' },
-  },
+  // {
+  //   id: 3,
+  //   roleId: 2,
+  //   action: 'manage',
+  //   subject: 'Story',
+  //   conditions: { author: '{{ id }}' },
+  // },
 ];
 
 export const users = [
@@ -39,7 +43,7 @@ export const users = [
     id: 1,
     firstName: 'Binod',
     lastName: 'Chaudhary',
-    roleId: 1,
+    roleId: 1, 
     authAddress: 'binod@mailinator.com',
   },
   {

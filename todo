@@ -20,5 +20,10 @@
 
 # OTP long live ✅
 # Protect Users/Roles/Perms routes
+    - Admin can MANAGE => All
+    - User can READ => All
+    - User cant CREATE/UPDATE => Any
+    - User can update own information only
 # Permission enums in database schema
 # Composite index/upsert in permission schema
+# Check env variable import

@@ -50,7 +50,7 @@ model User {
   updatedAt   DateTime @updatedAt
 
   authAddress String @unique
-  authType    AuthType @default(EMAIL)  
+  authType    AuthType @default(Email)  
 
   firstName   String?
   lastName    String?
@@ -64,7 +64,7 @@ model User {
 }
 
 enum AuthType {
-  EMAIL
-  PHONE
-  WALLET
+  Email
+  Phone
+  Wallet
 }
