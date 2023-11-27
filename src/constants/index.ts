@@ -8,10 +8,10 @@ export const ACTIONS = {
 
 export const SUBJECTS = {
   ALL: 'all',
-  USER: 'User',
-  STORY: 'Story',
-  ROLE: 'Role',
-  PERMISSION: 'Permission'
+  USER: 'user',
+  STORY: 'story',
+  ROLE: 'role',
+  PERMISSION: 'permission'
 };
 
 export const EMAIL_TEMPLATES = {

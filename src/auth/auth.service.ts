@@ -33,10 +33,11 @@ export class AuthService {
   async login(dto: LoginDto) {
     try {
       const OTP_SECRET = this.config.get('OTP_SECRET');
-      const isValid = totp.check(dto.otp.toString(), OTP_SECRET);
+      const { otp, authAddress } = dto;
+      const isValid = totp.check(otp, OTP_SECRET);
       if(!isValid) throw new ForbiddenException('OTP did not match!');
       // Get user by authAddress
-      const user = await this.userService.getUserByAuthAddress(dto.authAddress);
+      const user = await this.userService.getUserByAuthAddress(authAddress);
       if(!user) throw new ForbiddenException('User not found!');
       delete user.otp;
       // Sign token
