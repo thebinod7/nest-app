@@ -3,16 +3,16 @@ import { cloneDeep } from 'lodash';
 export const roles = [
   {
     id: 1,
-    name: 'Admin',
+    name: 'Super Admin',
     isSystem: true
   },
   {
     id: 2,
-    name: 'User',
+    name: 'Admin',
   },
   {
     id: 3,
-    name: 'Editor',
+    name: 'User',
   },
 ];
 
@@ -26,8 +26,38 @@ export const permissions = [
   {
     id: 2,
     roleId: 2,
+    action: 'manage',
+    subject: 'role',
+  },
+  {
+    id: 3,
+    roleId: 2,
+    action: 'manage',
+    subject: 'permission',
+  },
+  {
+    id: 4,
+    roleId: 2,
     action: 'read',
-    subject: 'User',
+    subject: 'user',
+  },
+  {
+    id: 5,
+    roleId: 2,
+    action: 'update',
+    subject: 'user',
+  },
+  {
+    id: 6,
+    roleId: 3,
+    action: 'read',
+    subject: 'all',
+  },
+  {
+    id: 7,
+    roleId: 3,
+    action: 'update',
+    subject: 'user',
   },
   // {
   //   id: 3,
@@ -41,17 +71,24 @@ export const permissions = [
 export const users = [
   {
     id: 1,
-    firstName: 'Binod',
-    lastName: 'Chaudhary',
+    firstName: 'Super',
+    lastName: 'Admin',
     roleId: 1, 
-    authAddress: 'binod@mailinator.com',
+    authAddress: 'super@mailinator.com',
   },
   {
     id: 2,
-    firstName: 'John',
-    lastName: 'Doe',
+    firstName: 'Mr',
+    lastName: 'Admin',
     roleId: 2,
-    authAddress: 'john@mailinator.com',
+    authAddress: 'admin@mailinator.com',
+  },
+  {
+    id: 3,
+    firstName: 'Mr',
+    lastName: 'User',
+    roleId: 3,
+    authAddress: 'user@mailinator.com',
   },
 ];
 

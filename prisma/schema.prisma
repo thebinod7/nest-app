@@ -17,7 +17,6 @@ model Role {
   isSystem   Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt()
-  deletedAt DateTime? @db.Timestamp()
 
   Permission Permission[]
   User       User[]

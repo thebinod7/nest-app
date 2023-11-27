@@ -23,19 +23,6 @@ export class OtpDto {
   @IsString()
   @IsNotEmpty()
   authAddress: string;
-
-  @IsString()
-  @IsNotEmpty()
-  firstName?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  lastName?: string;
-
-  @IsOptional()
-  @IsNumber()
-  roleId?: number;
-
 }
 
 
@@ -44,9 +31,9 @@ export class LoginDto {
   @IsNotEmpty()
   authAddress: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  otp: number;
+  otp: string;
 
 }
 
