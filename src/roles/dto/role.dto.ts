@@ -1,34 +1,34 @@
 import { IsNotEmpty, IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class CreateRoleDto {
-  @IsNotEmpty()
-  name: string;
+	@IsNotEmpty()
+	name: string;
 
-  @IsOptional()
-  isSystem?: boolean;
+	@IsOptional()
+	isSystem?: boolean;
 }
 
 export class CreatePermissionDto {
-  @IsNotEmpty()
-  action: string;
+	@IsNotEmpty()
+	action: string;
 
-  @IsNotEmpty()
-  subject: string;
+	@IsNotEmpty()
+	subject: string;
 
-  @IsNotEmpty()
-  roleId: number;
+	@IsNotEmpty()
+	roleId: number;
 }
 
 export class UpdatePermissionDto {
-  @IsOptional()
-  @IsString()
-  action: string;
+	@IsOptional()
+	@IsString()
+	action: string;
 
-  @IsOptional()
-  @IsString()
-  subject: string;
+	@IsOptional()
+	@IsString()
+	subject: string;
 
-  @IsOptional()
-  @IsNumber()
-  roleId: number;
+	@IsOptional()
+	@IsNumber()
+	roleId: number;
 }

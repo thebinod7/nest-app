@@ -1,46 +1,46 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SignupDto {
-  @IsString()
-  @IsNotEmpty()
-  authAddress: string;
+	@IsString()
+	@IsNotEmpty()
+	authAddress: string;
 
-  @IsString()
-  authType: string;
+	@IsString()
+	authType: string;
 
-  @IsOptional()
-  @IsNumber()
-  roleId: number;
+	@IsOptional()
+	@IsNumber()
+	roleId: number;
 
-  @IsOptional()
-  firstName: string;
+	@IsOptional()
+	firstName: string;
 
-  @IsOptional()
-  lastName: string;
+	@IsOptional()
+	lastName: string;
 }
 
 export class OtpDto {
-  @IsString()
-  @IsNotEmpty()
-  authAddress: string;
+	@IsString()
+	@IsNotEmpty()
+	authAddress: string;
 }
 
 export class LoginDto {
-  @IsString()
-  @IsNotEmpty()
-  authAddress: string;
+	@IsString()
+	@IsNotEmpty()
+	authAddress: string;
 
-  @IsString()
-  @IsNotEmpty()
-  otp: string;
+	@IsString()
+	@IsNotEmpty()
+	otp: string;
 }
 
 export class WalletLoginDto {
-  @IsString()
-  @IsNotEmpty()
-  signature: string;
+	@IsString()
+	@IsNotEmpty()
+	signature: string;
 
-  @IsString()
-  @IsNotEmpty()
-  message: string;
+	@IsString()
+	@IsNotEmpty()
+	message: string;
 }

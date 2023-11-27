@@ -8,14 +8,14 @@ import { RolesModule } from './roles/roles.module';
 import { MailModule } from './mail/mail.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    AuthModule,
-    UserModule,
-    PrismaModule,
-    AbilityModule,
-    RolesModule,
-    MailModule,
-  ],
+	imports: [
+		ConfigModule.forRoot({ isGlobal: true }),
+		AuthModule,
+		UserModule,
+		PrismaModule,
+		AbilityModule,
+		RolesModule,
+		MailModule,
+	],
 })
 export class AppModule {}
