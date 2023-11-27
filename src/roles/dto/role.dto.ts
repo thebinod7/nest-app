@@ -6,7 +6,6 @@ export class CreateRoleDto {
 
   @IsOptional()
   isSystem?: boolean;
-
 }
 
 export class CreatePermissionDto {

@@ -4,7 +4,7 @@ export const roles = [
   {
     id: 1,
     name: 'Super Admin',
-    isSystem: true
+    isSystem: true,
   },
   {
     id: 2,
@@ -73,7 +73,7 @@ export const users = [
     id: 1,
     firstName: 'Super',
     lastName: 'Admin',
-    roleId: 1, 
+    roleId: 1,
     authAddress: 'super@mailinator.com',
   },
   {

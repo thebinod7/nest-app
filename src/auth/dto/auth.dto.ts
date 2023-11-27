@@ -1,4 +1,4 @@
-import { IsNotEmpty,  IsNumber,  IsOptional,  IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SignupDto {
   @IsString()
@@ -25,7 +25,6 @@ export class OtpDto {
   authAddress: string;
 }
 
-
 export class LoginDto {
   @IsString()
   @IsNotEmpty()
@@ -34,9 +33,7 @@ export class LoginDto {
   @IsString()
   @IsNotEmpty()
   otp: string;
-
 }
-
 
 export class WalletLoginDto {
   @IsString()

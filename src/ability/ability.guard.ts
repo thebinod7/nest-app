@@ -23,7 +23,10 @@ export class AbilitiesGuard implements CanActivate {
     // Required rules sent from controller
     try {
       const rules: any =
-          this.reflector.get<RequiredRule[]>(CHECK_ABILITY, context.getHandler()) || [];
+        this.reflector.get<RequiredRule[]>(
+          CHECK_ABILITY,
+          context.getHandler(),
+        ) || [];
       const { action, subject } = rules[0];
 
       // Get permissions of current user
@@ -32,14 +35,22 @@ export class AbilitiesGuard implements CanActivate {
       const userPermissions = await this.prisma.permission.findMany({
         where: query,
       });
-      
+
+      console.log('UserPerms=>', userPermissions);
       const manageAll = this.canManageAll(userPermissions);
-      if(manageAll) return true;
+      if (manageAll) return true;
+      const manageSubject = this.canManageSubject(userPermissions, subject);
+      if (!manageSubject)
+        throw new HttpException('Permission denied for this subject!', 401);
+
       // Calculate permissions with required actions
       const perms = userPermissions.map((u) => u.action);
-      // if(perms.length && action === ACTIONS.MANAGE) return true;
       const permGrant = perms.includes(action);
-      if(!permGrant) throw new HttpException('You are not allowed to perform this action!', 401);
+      if (!permGrant)
+        throw new HttpException(
+          'You are not allowed to perform this action!',
+          401,
+        );
       return permGrant;
     } catch (error) {
       throw new HttpException(error.message, 401);
@@ -51,15 +62,18 @@ export class AbilitiesGuard implements CanActivate {
       if (
         permission.action === ACTIONS.MANAGE &&
         permission.subject === SUBJECTS.ALL
-      ) return true;
+      )
+        return true;
     }
-  
-    return false; 
+
+    return false;
   }
 
-  canManageSubject(userPermissions:any, subject:string) {
-    console.log("Subject==>", subject)
-    console.log("UserPerms=>", userPermissions)
+  canManageSubject(userPermissions: any, subject: string) {
+    for (const permission of userPermissions) {
+      if (permission.subject === subject) return true;
+    }
 
-  };
+    return false;
+  }
 }

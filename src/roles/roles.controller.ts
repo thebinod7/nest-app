@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreatePermissionDto, CreateRoleDto, UpdatePermissionDto } from './dto';
 import { CheckAbilities } from 'src/ability/ability.decorator';
@@ -16,7 +25,7 @@ export class RolesController {
   }
 
   @Delete(':id')
-  deleteRole( @Param('id') id:number) {
+  deleteRole(@Param('id') id: number) {
     return this.roleService.deleteRole(id);
   }
 
@@ -39,18 +48,20 @@ export class RolesController {
   }
 
   @Get(':roleId/perms')
-  listPermsByRole( @Param('roleId') roleId: number) {
+  listPermsByRole(@Param('roleId') roleId: number) {
     return this.roleService.listPermissionsByRole(+roleId);
   }
 
   @Delete(':permId/perms')
-  deletePermission( @Param('permId') permId:number ) {
+  deletePermission(@Param('permId') permId: number) {
     return this.roleService.deletePermission(+permId);
   }
 
   @Patch(':permId/perms')
-  updatePermission( @Param('permId') permId: number, @Body() dto: UpdatePermissionDto) {
+  updatePermission(
+    @Param('permId') permId: number,
+    @Body() dto: UpdatePermissionDto,
+  ) {
     return this.roleService.updatePermission(+permId, dto);
   }
-
 }

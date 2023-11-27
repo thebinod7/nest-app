@@ -11,9 +11,9 @@ export class UserService {
 
   async createUser(dto: any) {
     try {
-      if(!dto.roleId) dto.roleId = USER_ROLE_ID;
+      if (!dto.roleId) dto.roleId = USER_ROLE_ID;
       const user = await this.prisma.user.create({
-        data: dto
+        data: dto,
       });
       return user;
     } catch (err) {
@@ -58,22 +58,21 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  getUserById(userId: number){
-    return this.prisma.user.findUnique({where:{ id: userId }})
+  getUserById(userId: number) {
+    return this.prisma.user.findUnique({ where: { id: userId } });
   }
 
-  getUserByAuthAddress(authAddress: string){
-    return this.prisma.user.findUnique({where:{ authAddress }})
+  getUserByAuthAddress(authAddress: string) {
+    return this.prisma.user.findUnique({ where: { authAddress } });
   }
 
-  async deleteUser(userId:number) {
+  async deleteUser(userId: number) {
     try {
       const user = await this.getUserById(userId);
-      if(!user) throw new HttpException('User does not exist!', 500);
-      return this.prisma.user.delete({where:{id: +userId}})
-    } catch(err) {
+      if (!user) throw new HttpException('User does not exist!', 500);
+      return this.prisma.user.delete({ where: { id: +userId } });
+    } catch (err) {
       throw err;
     }
   }
-
 }

@@ -1,8 +1,8 @@
 import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import {ethers} from 'ethers'
+import { ethers } from 'ethers';
 import { totp } from 'otplib';
-import {  LoginDto, SignupDto, WalletLoginDto } from './dto';
+import { LoginDto, SignupDto, WalletLoginDto } from './dto';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
 import { EMAIL_TEMPLATES } from '../constants';
@@ -15,7 +15,7 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
     private mailSevice: MailService,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   async walletLogin(dto: WalletLoginDto) {
@@ -23,9 +23,9 @@ export class AuthService {
       const messageHash = ethers?.hashMessage(ethers?.toUtf8Bytes(dto.message));
       const walletAddress = ethers?.recoverAddress(messageHash, dto.signature);
       const user = await this.userService.getUserByAuthAddress(walletAddress);
-      if(!user) throw new ForbiddenException('User does not exist!');
+      if (!user) throw new ForbiddenException('User does not exist!');
       return this.signToken(user.id, user.authAddress);
-    } catch(err){
+    } catch (err) {
       throw err;
     }
   }
@@ -35,10 +35,10 @@ export class AuthService {
       const OTP_SECRET = this.config.get('OTP_SECRET');
       const { otp, authAddress } = dto;
       const isValid = totp.check(otp, OTP_SECRET);
-      if(!isValid) throw new ForbiddenException('OTP did not match!');
+      if (!isValid) throw new ForbiddenException('OTP did not match!');
       // Get user by authAddress
       const user = await this.userService.getUserByAuthAddress(authAddress);
-      if(!user) throw new ForbiddenException('User not found!');
+      if (!user) throw new ForbiddenException('User not found!');
       delete user.otp;
       // Sign token
       return this.signToken(user.id, user.authAddress);
@@ -51,9 +51,14 @@ export class AuthService {
     try {
       const OTP_SECRET = this.config.get('OTP_SECRET');
       const otp = totp.generate(OTP_SECRET);
-      const exist = await this.userService.getUserByAuthAddress(dto.authAddress);
-      if(!exist) throw new HttpException('User does not exist!', 404);
-      const user = await this.userService.updateOtpByAddress(dto.authAddress, +otp);
+      const exist = await this.userService.getUserByAuthAddress(
+        dto.authAddress,
+      );
+      if (!exist) throw new HttpException('User does not exist!', 404);
+      const user = await this.userService.updateOtpByAddress(
+        dto.authAddress,
+        +otp,
+      );
       const context = {
         name: dto.firstName,
         to: dto.authAddress,

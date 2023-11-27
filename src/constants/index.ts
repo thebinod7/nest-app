@@ -11,7 +11,7 @@ export const SUBJECTS = {
   USER: 'user',
   STORY: 'story',
   ROLE: 'role',
-  PERMISSION: 'permission'
+  PERMISSION: 'permission',
 };
 
 export const EMAIL_TEMPLATES = {
