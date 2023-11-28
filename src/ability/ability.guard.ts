@@ -1,12 +1,16 @@
 import { User } from '@prisma/client';
 import { Reflector } from '@nestjs/core';
-import { Injectable, CanActivate, ExecutionContext, HttpException } from '@nestjs/common';
+import {
+	Injectable,
+	CanActivate,
+	ExecutionContext,
+	HttpException,
+} from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { RequiredRule, CHECK_ABILITY } from './ability.decorator';
 import { ACTIONS, SUBJECTS } from 'src/constants';
 
-//TODO: Check manage=>all and manage=>subject condition
 @Injectable()
 export class AbilitiesGuard implements CanActivate {
 	constructor(
@@ -17,7 +21,9 @@ export class AbilitiesGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		// Required rules sent from controller
 		try {
-			const rules: any = this.reflector.get<RequiredRule[]>(CHECK_ABILITY, context.getHandler()) || [];
+			const rules: any =
+				this.reflector.get<RequiredRule[]>(CHECK_ABILITY, context.getHandler()) ||
+				[];
 			const { action, subject } = rules[0];
 
 			// Get permissions of current user
@@ -30,13 +36,19 @@ export class AbilitiesGuard implements CanActivate {
 			console.log('UserPerms=>', userPermissions);
 			const manageAll = this.canManageAll(userPermissions);
 			if (manageAll) return true;
+
+			const performOnAll = this.canPerformOnAll(userPermissions, action);
+			if (performOnAll) return true;
+
 			const manageSubject = this.canManageSubject(userPermissions, subject);
-			if (!manageSubject) throw new HttpException('Permission denied for this subject!', 401);
+			if (!manageSubject)
+				throw new HttpException('You are not allowed to perform this action!', 401);
 
 			// Calculate permissions with required actions
 			const perms = userPermissions.map((u) => u.action);
 			const permGrant = perms.includes(action);
-			if (!permGrant) throw new HttpException('You are not allowed to perform this action!', 401);
+			if (!permGrant)
+				throw new HttpException('You are not allowed to perform this action!', 401);
 			return permGrant;
 		} catch (error) {
 			throw new HttpException(error.message, 401);
@@ -45,7 +57,11 @@ export class AbilitiesGuard implements CanActivate {
 
 	canManageAll(userPermissions: any) {
 		for (const permission of userPermissions) {
-			if (permission.action === ACTIONS.MANAGE && permission.subject === SUBJECTS.ALL) return true;
+			if (
+				permission.action === ACTIONS.MANAGE &&
+				permission.subject === SUBJECTS.ALL
+			)
+				return true;
 		}
 
 		return false;
@@ -54,6 +70,19 @@ export class AbilitiesGuard implements CanActivate {
 	canManageSubject(userPermissions: any, subject: string) {
 		for (const permission of userPermissions) {
 			if (permission.subject === subject) return true;
+		}
+
+		return false;
+	}
+
+	// Perform particular action on all subjects. Eg: Read all subjects
+	canPerformOnAll(userPermissions: any, requiredAction: string) {
+		for (const permission of userPermissions) {
+			if (
+				permission.action === requiredAction &&
+				permission.subject === SUBJECTS.ALL
+			)
+				return true;
 		}
 
 		return false;

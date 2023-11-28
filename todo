@@ -8,9 +8,9 @@
 
 # Signup/Login using email & phone:  ✅
 
-- Upsert email address and send OTP
-- Enter OTP and compare
-- Validate and create JWT
+- Upsert email address and send OTP ✅
+- Enter OTP and compare ✅
+- Validate and create JWT ✅
 
 # Login using wallet  ✅
 # Roles CRUD API ✅
@@ -20,10 +20,13 @@
 
 # OTP long live ✅
 # Protect Users/Roles/Perms routes
-    - Admin can MANAGE => All
-    - User can READ => All
-    - User cant CREATE/UPDATE => Any
-    - User can update own information only
+    - Admin can MANAGE => All ✅
+    - User can READ => All ✅
+# Test cases
+
+================================================
 # Permission enums in database schema
 # Composite index/upsert in permission schema
 # Check env variable import
+# Queue for email/sms service
+# Update own content only
