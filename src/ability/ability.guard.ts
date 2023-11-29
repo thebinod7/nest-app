@@ -9,7 +9,7 @@ import {
 
 import { PrismaService } from '../prisma/prisma.service';
 import { RequiredRule, CHECK_ABILITY } from './ability.decorator';
-import { ACTIONS, SUBJECTS } from 'src/constants';
+import { ACTIONS, SUBJECTS } from '../constants';
 
 @Injectable()
 export class AbilitiesGuard implements CanActivate {
@@ -22,8 +22,10 @@ export class AbilitiesGuard implements CanActivate {
 		// Required rules sent from controller
 		try {
 			const rules: any =
-				this.reflector.get<RequiredRule[]>(CHECK_ABILITY, context.getHandler()) ||
-				[];
+				this.reflector.get<RequiredRule[]>(
+					CHECK_ABILITY,
+					context.getHandler(),
+				) || [];
 			const { action, subject } = rules[0];
 
 			// Get permissions of current user
@@ -42,13 +44,19 @@ export class AbilitiesGuard implements CanActivate {
 
 			const manageSubject = this.canManageSubject(userPermissions, subject);
 			if (!manageSubject)
-				throw new HttpException('You are not allowed to perform this action!', 401);
+				throw new HttpException(
+					'You are not allowed to perform this action!',
+					401,
+				);
 
 			// Calculate permissions with required actions
 			const perms = userPermissions.map((u) => u.action);
 			const permGrant = perms.includes(action);
 			if (!permGrant)
-				throw new HttpException('You are not allowed to perform this action!', 401);
+				throw new HttpException(
+					'You are not allowed to perform this action!',
+					401,
+				);
 			return permGrant;
 		} catch (error) {
 			throw new HttpException(error.message, 401);

@@ -1,11 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	UseGuards,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
-import { AbilitiesGuard } from 'src/ability/ability.guard';
-import { CheckAbilities } from 'src/ability/ability.decorator';
+import { AbilitiesGuard } from '../ability/ability.guard';
+import { CheckAbilities } from '../ability/ability.decorator';
 import { ACTIONS, SUBJECTS } from '../constants';
 
 // @UseGuards(JwtGuard)

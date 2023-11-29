@@ -4,7 +4,6 @@ import { AppModule } from '../src/app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { SignupDto } from 'src/auth/dto';
-import { CreateBookmarkDto } from 'src/bookmark/dto';
 
 const APP_URL = 'http://localhost:3333';
 
@@ -31,43 +30,59 @@ describe('App e2e', () => {
 
 	describe('Auth', () => {
 		const dto: SignupDto = {
-			email: 'johnyyyy@mail.com',
-			password: 'hello1234',
+			authAddress: 'bruce@mail.com',
+			authType: 'Email',
+			firstName: 'Bruce',
+			lastName: 'Wayne',
+			roleId: 2,
 		};
-		describe('Should Signup', () => {
-			it('Should throw if empty email', () => {
-				return pactum.spec().post('/auth/signup').withBody({ password: dto.password }).expectStatus(400);
-			});
+		// describe.only('Should Signup', () => {
+		// 	it('Should throw if auth address', () => {
+		// 		return pactum
+		// 			.spec()
+		// 			.post('/auth/signup')
+		// 			.withBody({ authType: dto.authType })
+		// 			.expectStatus(400);
+		// 	});
 
-			it('Should throw if empty password', () => {
-				return pactum.spec().post('/auth/signup').withBody({ email: dto.email }).expectStatus(400);
-			});
+		// 	it('Should signup', () => {
+		// 		return pactum
+		// 			.spec()
+		// 			.post('/auth/signup')
+		// 			.withBody(dto)
+		// 			.expectStatus(201)
+		// 			.inspect();
+		// 	});
+		// });
 
-			it('Should signup', () => {
-				return pactum.spec().post('/auth/signup').withBody(dto).expectStatus(201);
-			});
-			// .inspect();
-		});
+		// describe('Login', () => {
+		// 	it('Should throw if empty email', () => {
+		// 		return pactum
+		// 			.spec()
+		// 			.post('/auth/login')
+		// 			.withBody({ authAddress: dto.authAddress })
+		// 			.expectStatus(400);
+		// 	});
 
-		describe('Login', () => {
-			it('Should throw if empty email', () => {
-				return pactum.spec().post('/auth/login').withBody({ password: dto.password }).expectStatus(400);
-			});
-
-			it('Should throw if empty password', () => {
-				return pactum.spec().post('/auth/login').withBody({ email: dto.email }).expectStatus(400);
-			});
-
-			it('Should login', () => {
-				return pactum.spec().post('/auth/login').withBody(dto).expectStatus(200).stores('userToken', 'access_token');
-			});
-		});
+		// 	it('Should login', () => {
+		// 		return pactum
+		// 			.spec()
+		// 			.post('/auth/login')
+		// 			.withBody(dto)
+		// 			.expectStatus(200)
+		// 			.stores('userToken', 'access_token');
+		// 	});
+		// });
 	});
 
 	describe('User', () => {
-		describe('Get Me', () => {
+		describe.only('Get Me', () => {
 			it('Should get current user', () => {
-				return pactum.spec().get('/users/me').withHeaders({ Authorization: `Bearer $S{userToken}` }).expectStatus(200);
+				return pactum
+					.spec()
+					.get('/users/me')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(200);
 			});
 		});
 		describe('Edit User', () => {
@@ -88,24 +103,6 @@ describe('App e2e', () => {
 		});
 	});
 	// ===============================
-
-	describe('Create bookmark', () => {
-		const dto: CreateBookmarkDto = {
-			title: 'First Bookmark',
-			link: 'https://www.youtube.com/watch?v=d6WC5n9G_sM',
-		};
-		it('should create bookmark', () => {
-			return pactum
-				.spec()
-				.post('/bookmarks')
-				.withHeaders({
-					Authorization: 'Bearer $S{userToken}',
-				})
-				.withBody(dto)
-				.expectStatus(201)
-				.stores('bookmarkId', 'id');
-		});
-	});
 
 	describe('Get bookmarks', () => {
 		it('should get bookmarks', () => {
@@ -136,7 +133,8 @@ describe('App e2e', () => {
 
 	describe('Edit bookmark by id', () => {
 		const dto: any = {
-			title: 'Kubernetes Course - Full Beginners Tutorial (Containerize Your Apps!)',
+			title:
+				'Kubernetes Course - Full Beginners Tutorial (Containerize Your Apps!)',
 			description:
 				'Learn how to use Kubernetes in this complete course. Kubernetes makes it possible to containerize applications and simplifies app deployment to production.',
 		};

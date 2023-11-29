@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreatePermissionDto, CreateRoleDto, UpdatePermissionDto } from './dto';
-import { CheckAbilities } from 'src/ability/ability.decorator';
-import { JwtGuard } from 'src/auth/guard';
-import { AbilitiesGuard } from 'src/ability/ability.guard';
-import { ACTIONS, SUBJECTS } from 'src/constants';
+import { CheckAbilities } from '../ability/ability.decorator';
+import { JwtGuard } from '../auth/guard';
+import { AbilitiesGuard } from '../ability/ability.guard';
+import { ACTIONS, SUBJECTS } from '../constants';
 
 @Controller('roles')
 export class RolesController {

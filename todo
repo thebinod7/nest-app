@@ -22,7 +22,20 @@
 # Protect Users/Roles/Perms routes
     - Admin can MANAGE => All ✅
     - User can READ => All ✅
-# Test cases
+# Test cases: (User, Role, Permission)
+- Super Admin should be able to Manange All
+- Admin should be able to Create, Read, Update Users 
+- Admin should NOT be able to delete Users
+- Admin should be able to Create, Read, Update Role
+- Admin should NOT be able to Delete roles
+- Admin should be able to Manage Permission
+- User should be able to Read Users
+- User should be able to Update Users (Profile Update)
+- User should NOT be able to Create Users
+- User should NOT be able to Delete Users
+- User should NOT be able to Manage Role
+- User should NOT be able to Manage Permission
+- Nobody should be able to delete Super Admin
 
 ================================================
 # Permission enums in database schema

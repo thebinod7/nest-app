@@ -1,5 +1,5 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { HttpException, Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreatePermissionDto, CreateRoleDto, UpdatePermissionDto } from './dto';
 
 @Injectable()
@@ -30,7 +30,8 @@ export class RolesService {
 		try {
 			const role = await this.getRoleById(roleId);
 			if (!role) throw new HttpException('Roles does not exist!', 500);
-			if (role.isSystem) throw new HttpException('System roles are not allowed to delete!', 500);
+			if (role.isSystem)
+				throw new HttpException('System roles are not allowed to delete!', 500);
 			return this.prisma.role.delete({ where: { id: +roleId } });
 		} catch (err) {
 			throw err;
