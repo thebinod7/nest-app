@@ -6,6 +6,7 @@ import { SignupDto, LoginDto, OtpDto, WalletLoginDto } from './dto';
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
+	@HttpCode(HttpStatus.OK)
 	@Post('signup')
 	singup(@Body() dto: SignupDto) {
 		return this.authService.singup(dto);
@@ -23,6 +24,7 @@ export class AuthController {
 		return this.authService.walletLogin(dto);
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@Post('otp')
 	auth(@Body() dto: OtpDto) {
 		return this.authService.saveAndSendOTP(dto);

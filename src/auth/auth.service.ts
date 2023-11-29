@@ -51,9 +51,14 @@ export class AuthService {
 		try {
 			const OTP_SECRET = this.config.get('OTP_SECRET');
 			const otp = totp.generate(OTP_SECRET);
-			const exist = await this.userService.getUserByAuthAddress(dto.authAddress);
+			const exist = await this.userService.getUserByAuthAddress(
+				dto.authAddress,
+			);
 			if (!exist) throw new HttpException('User does not exist!', 404);
-			const user = await this.userService.updateOtpByAddress(dto.authAddress, +otp);
+			const user = await this.userService.updateOtpByAddress(
+				dto.authAddress,
+				otp,
+			);
 			const context = {
 				name: dto.firstName,
 				to: dto.authAddress,
@@ -75,7 +80,10 @@ export class AuthService {
 		}
 	}
 
-	async signToken(userId: number, authAddress: string): Promise<{ accessToken: string }> {
+	async signToken(
+		userId: number,
+		authAddress: string,
+	): Promise<{ accessToken: string }> {
 		const payload = {
 			sub: userId,
 			authAddress,

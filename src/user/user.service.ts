@@ -40,7 +40,7 @@ export class UserService {
 		}
 	}
 
-	async updateOtpByAddress(authAddress: string, otp: number) {
+	async updateOtpByAddress(authAddress: string, otp: string) {
 		try {
 			const user = await this.prisma.user.update({
 				where: {
