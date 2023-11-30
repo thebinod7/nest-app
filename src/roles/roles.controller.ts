@@ -3,13 +3,20 @@ import {
 	Controller,
 	Delete,
 	Get,
+	HttpCode,
+	HttpStatus,
 	Param,
 	Patch,
 	Post,
 	UseGuards,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
-import { CreatePermissionDto, CreateRoleDto, UpdatePermissionDto } from './dto';
+import {
+	CreatePermissionDto,
+	CreateRoleDto,
+	EditRoleDto,
+	UpdatePermissionDto,
+} from './dto';
 import { CheckAbilities } from '../ability/ability.decorator';
 import { JwtGuard } from '../auth/guard';
 import { AbilitiesGuard } from '../ability/ability.guard';
@@ -19,6 +26,7 @@ import { ACTIONS, SUBJECTS } from '../constants';
 export class RolesController {
 	constructor(private roleService: RolesService) {}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.CREATE, subject: SUBJECTS.ROLE })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Post()
@@ -26,13 +34,23 @@ export class RolesController {
 		return this.roleService.createRole(dto);
 	}
 
+	@HttpCode(HttpStatus.OK)
+	@CheckAbilities({ action: ACTIONS.UPDATE, subject: SUBJECTS.USER })
+	@UseGuards(JwtGuard, AbilitiesGuard)
+	@Patch(':id')
+	editUser(@Param('id') id: number, @Body() dto: EditRoleDto) {
+		return this.roleService.updateRole(+id, dto);
+	}
+
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.DELETE, subject: SUBJECTS.ROLE })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Delete(':id')
 	deleteRole(@Param('id') id: number) {
-		return this.roleService.deleteRole(id);
+		return this.roleService.deleteRole(+id);
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.ROLE })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Get()
@@ -41,6 +59,7 @@ export class RolesController {
 	}
 
 	// ============Permission Routes=======
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.CREATE, subject: SUBJECTS.PERMISSION })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Post('perm')
@@ -48,6 +67,7 @@ export class RolesController {
 		return this.roleService.createPermission(dto);
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.PERMISSION })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Get('perms')
@@ -55,6 +75,7 @@ export class RolesController {
 		return this.roleService.listPermissions();
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.PERMISSION })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Get(':roleId/perms')
@@ -62,6 +83,7 @@ export class RolesController {
 		return this.roleService.listPermissionsByRole(+roleId);
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.DELETE, subject: SUBJECTS.PERMISSION })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Delete(':permId/perms')
@@ -69,6 +91,7 @@ export class RolesController {
 		return this.roleService.deletePermission(+permId);
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.UPDATE, subject: SUBJECTS.PERMISSION })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Patch(':permId/perms')

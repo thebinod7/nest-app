@@ -1,6 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreatePermissionDto, CreateRoleDto, UpdatePermissionDto } from './dto';
+import {
+	CreatePermissionDto,
+	CreateRoleDto,
+	EditRoleDto,
+	UpdatePermissionDto,
+} from './dto';
 
 @Injectable()
 export class RolesService {
@@ -9,6 +14,20 @@ export class RolesService {
 	createRole(dto: CreateRoleDto) {
 		try {
 			return this.prisma.role.create({ data: dto });
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	async updateRole(roleId: number, dto: EditRoleDto) {
+		try {
+			const user = await this.prisma.role.update({
+				where: {
+					id: roleId,
+				},
+				data: dto,
+			});
+			return user;
 		} catch (err) {
 			throw err;
 		}

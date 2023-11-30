@@ -8,6 +8,14 @@ export class CreateRoleDto {
 	isSystem?: boolean;
 }
 
+export class EditRoleDto {
+	@IsNotEmpty()
+	name: string;
+
+	@IsOptional()
+	isSystem?: boolean;
+}
+
 export class CreatePermissionDto {
 	@IsNotEmpty()
 	action: string;

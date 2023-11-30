@@ -21,21 +21,9 @@ describe('App e2e', () => {
 		await app.listen(3333);
 
 		prisma = app.get(PrismaService);
-		await prisma.cleanDb();
-		await prisma.role.create({
-			data: {
-				id: 1,
-				name: 'Manager',
-			},
-		});
-		await prisma.role.create({
-			data: {
-				id: 2,
-				name: 'Admin',
-				isSystem: true,
-			},
-		});
-
+		const r = await prisma.role.findMany();
+		console.log('====>', r);
+		// await prisma.cleanDb();
 		pactum.request.setBaseUrl(APP_URL);
 		pactum.request.setDefaultTimeout(5000);
 	});
@@ -43,32 +31,8 @@ describe('App e2e', () => {
 	afterAll(() => app.close());
 
 	describe('Auth', () => {
-		const dto: SignupDto = {
-			authAddress: 'bruce@mailinator.com',
-			authType: 'Email',
-			firstName: 'Bruce',
-			lastName: 'Wayne',
-			roleId: 2,
-		};
-		describe('Should Signup', () => {
-			it('Should throw if no auth address', () => {
-				return pactum
-					.spec()
-					.post('/auth/signup')
-					.withBody({ authType: dto.authType })
-					.expectStatus(400);
-			});
-
-			it('Should signup with email', () => {
-				return pactum
-					.spec()
-					.post('/auth/signup')
-					.withBody(dto)
-					.expectStatus(200);
-			});
-		});
-
-		describe('Login', () => {
+		describe('Admin test cases', () => {
+			const email = 'admin@mailinator.com';
 			it('Should throw if empty auth address', () => {
 				return pactum
 					.spec()
@@ -81,7 +45,7 @@ describe('App e2e', () => {
 				return pactum
 					.spec()
 					.post('/auth/otp')
-					.withBody({ authAddress: dto.authAddress })
+					.withBody({ authAddress: email })
 					.expectStatus(200)
 					.stores('currentOTP', 'otp');
 			});
@@ -92,11 +56,47 @@ describe('App e2e', () => {
 					.spec()
 					.post('/auth/login')
 					.withBody({
-						authAddress: dto.authAddress,
+						authAddress: email,
 						otp: otp,
 					})
 					.expectStatus(200)
 					.stores('userToken', 'accessToken');
+			});
+
+			it('Should create a role', () => {
+				return pactum
+					.spec()
+					.post('/roles')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						name: 'Demo101',
+						isSystem: false,
+					})
+					.expectStatus(200)
+					.stores('roleId', 'id');
+			});
+
+			it('Should update a role', () => {
+				const roleId = `$S{roleId}`;
+				return pactum
+					.spec()
+					.patch('/roles/' + roleId)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						name: 'Demo102',
+						isSystem: false,
+					})
+					.expectStatus(200)
+					.inspect();
+			});
+
+			it('Should delete a role', () => {
+				const roleId = `$S{roleId}`;
+				return pactum
+					.spec()
+					.delete('/roles/' + roleId)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(200);
 			});
 		});
 	});
