@@ -30,17 +30,17 @@ describe('App e2e', () => {
 
 	afterAll(() => app.close());
 
-	describe('Auth', () => {
-		describe('Admin test cases', () => {
-			const userDto: SignupDto = {
-				firstName: 'John',
-				lastName: 'Doe',
-				roleId: 3,
-				authAddress: 'doe@mailinator.com',
-				authType: 'Email',
-			};
+	describe('RS-User', () => {
+		const userDto: SignupDto = {
+			firstName: 'John',
+			lastName: 'Doe',
+			roleId: 3,
+			authAddress: 'doe@mailinator.com',
+			authType: 'Email',
+		};
+		// =========Admin Test Cases============
+		describe('Admin test cases:', () => {
 			const email = 'admin@mailinator.com';
-
 			it('Should send OTP', () => {
 				return pactum
 					.spec()
@@ -127,6 +127,69 @@ describe('App e2e', () => {
 					.delete('/users/' + createdUser)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.expectStatus(200);
+			});
+		});
+
+		// =========Manager Test Cases============
+		describe.only('Manager test cases:', () => {
+			const email = 'manager@mailinator.com';
+			it('Should send OTP', () => {
+				return pactum
+					.spec()
+					.post('/auth/otp')
+					.withBody({ authAddress: email })
+					.expectStatus(200)
+					.stores('currentOTP', 'otp');
+			});
+
+			it('Should login using OTP', () => {
+				const otp = `$S{currentOTP}`;
+				return pactum
+					.spec()
+					.post('/auth/login')
+					.withBody({
+						authAddress: email,
+						otp: otp,
+					})
+					.expectStatus(200)
+					.stores('userToken', 'accessToken');
+			});
+
+			it('Should create a role', () => {
+				return pactum
+					.spec()
+					.post('/roles')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						name: 'Demo203',
+						isSystem: false,
+					})
+					.expectStatus(200)
+					.stores('createdRole', 'id');
+			});
+
+			it('Should update a role', () => {
+				const createdRole = `$S{createdRole}`;
+				return pactum
+					.spec()
+					.patch('/roles/' + createdRole)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						name: 'Demo202',
+						isSystem: false,
+					})
+					.expectStatus(200)
+					.inspect();
+			});
+
+			it('Should NOT delete a role', () => {
+				const createdRole = `$S{createdRole}`;
+				return pactum
+					.spec()
+					.delete('/roles/' + createdRole)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401)
+					.inspect();
 			});
 		});
 	});

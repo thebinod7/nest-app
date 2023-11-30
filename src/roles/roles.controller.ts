@@ -35,7 +35,7 @@ export class RolesController {
 	}
 
 	@HttpCode(HttpStatus.OK)
-	@CheckAbilities({ action: ACTIONS.UPDATE, subject: SUBJECTS.USER })
+	@CheckAbilities({ action: ACTIONS.UPDATE, subject: SUBJECTS.ROLE })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Patch(':id')
 	editUser(@Param('id') id: number, @Body() dto: EditRoleDto) {
