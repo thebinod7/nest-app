@@ -43,6 +43,14 @@ export class UserController {
 	}
 
 	@HttpCode(HttpStatus.OK)
+	@CheckAbilities({ action: ACTIONS.UPDATE, subject: SUBJECTS.USER })
+	@UseGuards(JwtGuard, AbilitiesGuard)
+	@Patch('profile')
+	updateProfile(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
+		return this.userService.updateProfile(+userId, dto);
+	}
+
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.USER })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Get('')

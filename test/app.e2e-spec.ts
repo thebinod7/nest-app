@@ -138,7 +138,7 @@ describe('App e2e', () => {
 		});
 
 		// =========Manager Test Cases============
-		describe.only('Manager test cases:', () => {
+		describe('Manager test cases:', () => {
 			const email = 'manager@mailinator.com';
 			it('Should send OTP', () => {
 				return pactum
@@ -258,6 +258,52 @@ describe('App e2e', () => {
 					.delete(`/roles/${createdPermId}/perms`)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.expectStatus(401);
+			});
+		});
+
+		// ===========User Test Cases===============
+		describe.only('User test cases', () => {
+			const email = 'user@mailinator.com';
+			it('Should send OTP', () => {
+				return pactum
+					.spec()
+					.post('/auth/otp')
+					.withBody({ authAddress: email })
+					.expectStatus(200)
+					.stores('currentOTP', 'otp');
+			});
+
+			it('Should login using OTP', () => {
+				const otp = `$S{currentOTP}`;
+				return pactum
+					.spec()
+					.post('/auth/login')
+					.withBody({
+						authAddress: email,
+						otp: otp,
+					})
+					.expectStatus(200)
+					.stores('userToken', 'accessToken');
+			});
+
+			it('Should LIST users', () => {
+				return pactum
+					.spec()
+					.get('/users')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(200);
+			});
+
+			it('Should UPDATE profile', () => {
+				return pactum
+					.spec()
+					.patch('/users/profile')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						firstName: 'Tony',
+						lastName: 'Stark',
+					})
+					.expectStatus(200);
 			});
 		});
 	});
