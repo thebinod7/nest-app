@@ -48,9 +48,9 @@ export class RolesService {
 	async deleteRole(roleId: number) {
 		try {
 			const role = await this.getRoleById(roleId);
-			if (!role) throw new HttpException('Roles does not exist!', 500);
+			if (!role) throw new HttpException('Roles does not exist!', 404);
 			if (role.isSystem)
-				throw new HttpException('System roles are not allowed to delete!', 500);
+				throw new HttpException('System roles are not allowed to delete!', 401);
 			return this.prisma.role.delete({ where: { id: +roleId } });
 		} catch (err) {
 			throw err;

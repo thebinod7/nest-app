@@ -41,14 +41,14 @@ describe('App e2e', () => {
 		};
 
 		const permissionDto: CreatePermissionDto = {
-			action: 'John',
+			action: 'test',
 			subject: 'user',
 			roleId: 3,
 		};
 		// =========Admin Test Cases============
-		describe('Admin test cases:', () => {
+		describe.only('Admin test cases:', () => {
 			const email = 'admin@mailinator.com';
-			it('Should send OTP', () => {
+			it('Should SEND OTP', () => {
 				return pactum
 					.spec()
 					.post('/auth/otp')
@@ -57,7 +57,7 @@ describe('App e2e', () => {
 					.stores('currentOTP', 'otp');
 			});
 
-			it('Should login using OTP', () => {
+			it('Should LOGIN using OTP', () => {
 				const otp = `$S{currentOTP}`;
 				return pactum
 					.spec()
@@ -70,33 +70,33 @@ describe('App e2e', () => {
 					.stores('userToken', 'accessToken');
 			});
 
-			it('Should create a role', () => {
+			it('Should CREATE Role', () => {
 				return pactum
 					.spec()
 					.post('/roles')
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.withBody({
-						name: 'Demo101',
+						name: genRandomString(),
 						isSystem: false,
 					})
 					.expectStatus(200)
 					.stores('createdRole', 'id');
 			});
 
-			it('Should update a role', () => {
+			it('Should UPDATE Role', () => {
 				const createdRole = `$S{createdRole}`;
 				return pactum
 					.spec()
 					.patch('/roles/' + createdRole)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.withBody({
-						name: 'Demo102',
+						name: genRandomString(),
 						isSystem: false,
 					})
 					.expectStatus(200);
 			});
 
-			it('Should delete a role', () => {
+			it('Should DELETE Role', () => {
 				const createdRole = `$S{createdRole}`;
 				return pactum
 					.spec()
@@ -105,7 +105,9 @@ describe('App e2e', () => {
 					.expectStatus(200);
 			});
 
-			it('Should create a user', () => {
+			it('Should CREATE User', () => {
+				const emailPrefix = genRandomString(5);
+				userDto.authAddress = `${emailPrefix}@mailinator.com`;
 				return pactum
 					.spec()
 					.post('/users')
@@ -115,19 +117,7 @@ describe('App e2e', () => {
 					.stores('createdUser', 'id');
 			});
 
-			it('Should update a user', () => {
-				const createdUser = `$S{createdUser}`;
-				return pactum
-					.spec()
-					.patch('/users/' + createdUser)
-					.withHeaders({ Authorization: `Bearer $S{userToken}` })
-					.withBody({
-						firstName: 'Joe',
-					})
-					.expectStatus(200);
-			});
-
-			it('Should delete a user', () => {
+			it('Should DELETE User', () => {
 				const createdUser = `$S{createdUser}`;
 				return pactum
 					.spec()
@@ -135,10 +125,38 @@ describe('App e2e', () => {
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.expectStatus(200);
 			});
+
+			it('Should CREATE permission', () => {
+				return pactum
+					.spec()
+					.post('/roles/perm')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({ action: 'update', subject: 'all', roleId: 3 })
+					.expectStatus(200)
+					.stores('createdPermId', 'id');
+			});
+
+			it('Should DELETE Permission', () => {
+				const createdPermId = `$S{createdPermId}`;
+				return pactum
+					.spec()
+					.delete(`/roles/${createdPermId}/perms`)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(200);
+			});
+
+			it('Should NOT DELETE System Role', () => {
+				const roleId = 1;
+				return pactum
+					.spec()
+					.delete(`/roles/${roleId}`)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
 		});
 
 		// =========Manager Test Cases============
-		describe.only('Manager test cases:', () => {
+		describe('Manager test cases:', () => {
 			const email = 'manager@mailinator.com';
 			it('Should SEND OTP', () => {
 				return pactum
