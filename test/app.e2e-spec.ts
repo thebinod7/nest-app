@@ -4,6 +4,7 @@ import { AppModule } from '../src/app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { SignupDto } from 'src/auth/dto';
+import { CreatePermissionDto } from 'src/roles/dto';
 
 const APP_URL = 'http://localhost:3333';
 
@@ -37,6 +38,12 @@ describe('App e2e', () => {
 			roleId: 3,
 			authAddress: 'go@mailinator.com',
 			authType: 'Email',
+		};
+
+		const permissionDto: CreatePermissionDto = {
+			action: 'John',
+			subject: 'user',
+			roleId: 3,
 		};
 		// =========Admin Test Cases============
 		describe('Admin test cases:', () => {
@@ -209,8 +216,7 @@ describe('App e2e', () => {
 					.withBody({
 						firstName: 'Joe',
 					})
-					.expectStatus(200)
-					.inspect();
+					.expectStatus(200);
 			});
 
 			it('Should NOT delete a user', () => {
@@ -218,6 +224,38 @@ describe('App e2e', () => {
 				return pactum
 					.spec()
 					.delete('/users/' + createdUser)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should create a permission', () => {
+				return pactum
+					.spec()
+					.post('/roles/perm')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody(permissionDto)
+					.expectStatus(200)
+					.stores('createdPermId', 'id');
+			});
+
+			it('Should update a permission', () => {
+				const createdPermId = `$S{createdPermId}`;
+				return pactum
+					.spec()
+					.patch(`/roles/${createdPermId}/perms`)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						action: 'update',
+					})
+					.expectStatus(200)
+					.inspect();
+			});
+
+			it('Should delete a permission', () => {
+				const createdPermId = `$S{createdPermId}`;
+				return pactum
+					.spec()
+					.delete(`/roles/${createdPermId}/perms`)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.expectStatus(401);
 			});

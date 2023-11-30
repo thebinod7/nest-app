@@ -84,14 +84,6 @@ export class RolesController {
 	}
 
 	@HttpCode(HttpStatus.OK)
-	@CheckAbilities({ action: ACTIONS.DELETE, subject: SUBJECTS.PERMISSION })
-	@UseGuards(JwtGuard, AbilitiesGuard)
-	@Delete(':permId/perms')
-	deletePermission(@Param('permId') permId: number) {
-		return this.roleService.deletePermission(+permId);
-	}
-
-	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.UPDATE, subject: SUBJECTS.PERMISSION })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Patch(':permId/perms')
@@ -100,5 +92,13 @@ export class RolesController {
 		@Body() dto: UpdatePermissionDto,
 	) {
 		return this.roleService.updatePermission(+permId, dto);
+	}
+
+	@HttpCode(HttpStatus.OK)
+	@CheckAbilities({ action: ACTIONS.DELETE, subject: SUBJECTS.PERMISSION })
+	@UseGuards(JwtGuard, AbilitiesGuard)
+	@Delete(':permId/perms')
+	deletePermission(@Param('permId') permId: number) {
+		return this.roleService.deletePermission(+permId);
 	}
 }
