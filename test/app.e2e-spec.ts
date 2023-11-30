@@ -264,7 +264,7 @@ describe('App e2e', () => {
 		// ===========User Test Cases===============
 		describe.only('User test cases', () => {
 			const email = 'user@mailinator.com';
-			it('Should send OTP', () => {
+			it('Should SEND OTP', () => {
 				return pactum
 					.spec()
 					.post('/auth/otp')
@@ -273,7 +273,7 @@ describe('App e2e', () => {
 					.stores('currentOTP', 'otp');
 			});
 
-			it('Should login using OTP', () => {
+			it('Should LOGIN using OTP', () => {
 				const otp = `$S{currentOTP}`;
 				return pactum
 					.spec()
@@ -286,7 +286,7 @@ describe('App e2e', () => {
 					.stores('userToken', 'accessToken');
 			});
 
-			it('Should LIST users', () => {
+			it('Should LIST Users', () => {
 				return pactum
 					.spec()
 					.get('/users')
@@ -294,7 +294,7 @@ describe('App e2e', () => {
 					.expectStatus(200);
 			});
 
-			it('Should UPDATE profile', () => {
+			it('Should UPDATE Profile', () => {
 				return pactum
 					.spec()
 					.patch('/users/profile')
@@ -304,6 +304,76 @@ describe('App e2e', () => {
 						lastName: 'Stark',
 					})
 					.expectStatus(200);
+			});
+
+			it('Should NOT LIST Roles', () => {
+				return pactum
+					.spec()
+					.get('/roles')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should NOT LIST Permissions', () => {
+				return pactum
+					.spec()
+					.get('/roles/perms')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should NOT CREATE User', () => {
+				return pactum
+					.spec()
+					.post('/users')
+					.withBody(userDto)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should NOT DELETE User', () => {
+				const userId = 3;
+				return pactum
+					.spec()
+					.delete(`/users/${userId}`)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should NOT CREATE Role', () => {
+				return pactum
+					.spec()
+					.post('/roles')
+					.withBody({ name: 'Test' })
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should NOT DELETE Role', () => {
+				const roleId = 3;
+				return pactum
+					.spec()
+					.delete(`/roles/${roleId}`)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should NOT CREATE Permission', () => {
+				return pactum
+					.spec()
+					.post('/roles/perm')
+					.withBody(permissionDto)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
+			});
+
+			it('Should NOT DELETE Permission', () => {
+				const permId = 3;
+				return pactum
+					.spec()
+					.delete(`/roles/${permId}/perms`)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
 			});
 		});
 	});
