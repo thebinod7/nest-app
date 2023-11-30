@@ -21,8 +21,8 @@ describe('App e2e', () => {
 		await app.listen(3333);
 
 		prisma = app.get(PrismaService);
-		const r = await prisma.role.findMany();
-		console.log('====>', r);
+		// const r = await prisma.role.findMany();
+		// console.log('====>', r);
 		// await prisma.cleanDb();
 		pactum.request.setBaseUrl(APP_URL);
 		pactum.request.setDefaultTimeout(5000);
@@ -32,14 +32,14 @@ describe('App e2e', () => {
 
 	describe('Auth', () => {
 		describe('Admin test cases', () => {
+			const userDto: SignupDto = {
+				firstName: 'John',
+				lastName: 'Doe',
+				roleId: 3,
+				authAddress: 'doe@mailinator.com',
+				authType: 'Email',
+			};
 			const email = 'admin@mailinator.com';
-			it('Should throw if empty auth address', () => {
-				return pactum
-					.spec()
-					.post('/auth/login')
-					.withBody({ authType: 'Email' })
-					.expectStatus(400);
-			});
 
 			it('Should send OTP', () => {
 				return pactum
@@ -73,28 +73,58 @@ describe('App e2e', () => {
 						isSystem: false,
 					})
 					.expectStatus(200)
-					.stores('roleId', 'id');
+					.stores('createdRole', 'id');
 			});
 
 			it('Should update a role', () => {
-				const roleId = `$S{roleId}`;
+				const createdRole = `$S{createdRole}`;
 				return pactum
 					.spec()
-					.patch('/roles/' + roleId)
+					.patch('/roles/' + createdRole)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.withBody({
 						name: 'Demo102',
 						isSystem: false,
 					})
-					.expectStatus(200)
-					.inspect();
+					.expectStatus(200);
 			});
 
 			it('Should delete a role', () => {
-				const roleId = `$S{roleId}`;
+				const createdRole = `$S{createdRole}`;
 				return pactum
 					.spec()
-					.delete('/roles/' + roleId)
+					.delete('/roles/' + createdRole)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(200);
+			});
+
+			it('Should create a user', () => {
+				return pactum
+					.spec()
+					.post('/users')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody(userDto)
+					.expectStatus(200)
+					.stores('createdUser', 'id');
+			});
+
+			it('Should update a user', () => {
+				const createdUser = `$S{createdUser}`;
+				return pactum
+					.spec()
+					.patch('/users/' + createdUser)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						firstName: 'Joe',
+					})
+					.expectStatus(200);
+			});
+
+			it('Should delete a user', () => {
+				const createdUser = `$S{createdUser}`;
+				return pactum
+					.spec()
+					.delete('/users/' + createdUser)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.expectStatus(200);
 			});

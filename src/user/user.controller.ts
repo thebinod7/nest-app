@@ -3,8 +3,11 @@ import {
 	Controller,
 	Delete,
 	Get,
+	HttpCode,
+	HttpStatus,
 	Param,
 	Patch,
+	Post,
 	UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
@@ -15,12 +18,22 @@ import { UserService } from './user.service';
 import { AbilitiesGuard } from '../ability/ability.guard';
 import { CheckAbilities } from '../ability/ability.decorator';
 import { ACTIONS, SUBJECTS } from '../constants';
+import { SignupDto } from '../auth/dto';
 
 // @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
 	constructor(private userService: UserService) {}
 
+	@HttpCode(HttpStatus.OK)
+	@CheckAbilities({ action: ACTIONS.CREATE, subject: SUBJECTS.ROLE })
+	@UseGuards(JwtGuard, AbilitiesGuard)
+	@Post()
+	createRole(@Body() dto: SignupDto) {
+		return this.userService.createUser(dto);
+	}
+
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.USER })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Get('me')
@@ -29,6 +42,7 @@ export class UserController {
 		return user;
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.READ, subject: SUBJECTS.USER })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Get('')
@@ -36,13 +50,15 @@ export class UserController {
 		return this.userService.listUsers();
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.UPDATE, subject: SUBJECTS.USER })
 	@UseGuards(JwtGuard, AbilitiesGuard)
-	@Patch()
-	editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
-		return this.userService.updateProfile(userId, dto);
+	@Patch(':userId')
+	editUser(@Param('userId') userId: number, @Body() dto: EditUserDto) {
+		return this.userService.updateProfile(+userId, dto);
 	}
 
+	@HttpCode(HttpStatus.OK)
 	@CheckAbilities({ action: ACTIONS.DELETE, subject: SUBJECTS.USER })
 	@UseGuards(JwtGuard, AbilitiesGuard)
 	@Delete(':userId')

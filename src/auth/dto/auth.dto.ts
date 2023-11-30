@@ -12,10 +12,10 @@ export class SignupDto {
 	@IsNumber()
 	roleId: number;
 
-	@IsOptional()
+	@IsNotEmpty()
 	firstName: string;
 
-	@IsOptional()
+	@IsNotEmpty()
 	lastName: string;
 }
 
