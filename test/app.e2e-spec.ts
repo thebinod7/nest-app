@@ -35,7 +35,7 @@ describe('App e2e', () => {
 			firstName: 'John',
 			lastName: 'Doe',
 			roleId: 3,
-			authAddress: 'doe@mailinator.com',
+			authAddress: 'go@mailinator.com',
 			authType: 'Email',
 		};
 		// =========Admin Test Cases============
@@ -161,7 +161,7 @@ describe('App e2e', () => {
 					.post('/roles')
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.withBody({
-						name: 'Demo203',
+						name: 'R1',
 						isSystem: false,
 					})
 					.expectStatus(200)
@@ -175,11 +175,10 @@ describe('App e2e', () => {
 					.patch('/roles/' + createdRole)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.withBody({
-						name: 'Demo202',
+						name: 'R2',
 						isSystem: false,
 					})
-					.expectStatus(200)
-					.inspect();
+					.expectStatus(200);
 			});
 
 			it('Should NOT delete a role', () => {
@@ -188,9 +187,43 @@ describe('App e2e', () => {
 					.spec()
 					.delete('/roles/' + createdRole)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
-					.expectStatus(401)
+					.expectStatus(401);
+			});
+
+			it('Should create a user', () => {
+				return pactum
+					.spec()
+					.post('/users')
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody(userDto)
+					.expectStatus(200)
+					.stores('createdUser', 'id');
+			});
+
+			it('Should update a user', () => {
+				const createdUser = `$S{createdUser}`;
+				return pactum
+					.spec()
+					.patch('/users/' + createdUser)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.withBody({
+						firstName: 'Joe',
+					})
+					.expectStatus(200)
 					.inspect();
+			});
+
+			it('Should NOT delete a user', () => {
+				const createdUser = `$S{createdUser}`;
+				return pactum
+					.spec()
+					.delete('/users/' + createdUser)
+					.withHeaders({ Authorization: `Bearer $S{userToken}` })
+					.expectStatus(401);
 			});
 		});
 	});
 });
+
+// Note:
+// - Clear DB
