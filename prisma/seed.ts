@@ -106,6 +106,11 @@ export const users = [
 const prisma = new PrismaClient();
 
 async function main() {
+	// await prisma.$transaction([
+	// 	prisma.permission.deleteMany(),
+	// 	prisma.user.deleteMany(),
+	// 	prisma.role.deleteMany(),
+	// ]);
 	// ===========Create Roles=============
 	for await (const role of roles) {
 		const roleAttrs = cloneDeep(role);

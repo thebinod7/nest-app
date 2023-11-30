@@ -22,8 +22,6 @@ describe('App e2e', () => {
 		await app.listen(3333);
 
 		prisma = app.get(PrismaService);
-		// const r = await prisma.role.findMany();
-		// console.log('====>', r);
 		// await prisma.cleanDb();
 		pactum.request.setBaseUrl(APP_URL);
 		pactum.request.setDefaultTimeout(5000);
@@ -418,5 +416,8 @@ function genRandomString(length: number = 8) {
 	return result;
 }
 
-// Note:
-// - Clear DB
+// Steps:
+// 1. Clear DB (docker compose DOWN then UP)
+// 2. Run npx prisma migrate dev
+// 3. Run npx prisma db seed
+// 4. Run yarn test:dev
