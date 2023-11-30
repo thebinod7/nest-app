@@ -138,9 +138,9 @@ describe('App e2e', () => {
 		});
 
 		// =========Manager Test Cases============
-		describe('Manager test cases:', () => {
+		describe.only('Manager test cases:', () => {
 			const email = 'manager@mailinator.com';
-			it('Should send OTP', () => {
+			it('Should SEND OTP', () => {
 				return pactum
 					.spec()
 					.post('/auth/otp')
@@ -149,7 +149,7 @@ describe('App e2e', () => {
 					.stores('currentOTP', 'otp');
 			});
 
-			it('Should login using OTP', () => {
+			it('Should LOGIN using OTP', () => {
 				const otp = `$S{currentOTP}`;
 				return pactum
 					.spec()
@@ -162,33 +162,33 @@ describe('App e2e', () => {
 					.stores('userToken', 'accessToken');
 			});
 
-			it('Should create a role', () => {
+			it('Should CREATE Role', () => {
 				return pactum
 					.spec()
 					.post('/roles')
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.withBody({
-						name: 'R1',
+						name: genRandomString(),
 						isSystem: false,
 					})
 					.expectStatus(200)
 					.stores('createdRole', 'id');
 			});
 
-			it('Should update a role', () => {
+			it('Should UPDATE Role', () => {
 				const createdRole = `$S{createdRole}`;
 				return pactum
 					.spec()
 					.patch('/roles/' + createdRole)
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
 					.withBody({
-						name: 'R2',
+						name: genRandomString(),
 						isSystem: false,
 					})
 					.expectStatus(200);
 			});
 
-			it('Should NOT delete a role', () => {
+			it('Should NOT DELETE Role', () => {
 				const createdRole = `$S{createdRole}`;
 				return pactum
 					.spec()
@@ -197,17 +197,25 @@ describe('App e2e', () => {
 					.expectStatus(401);
 			});
 
-			it('Should create a user', () => {
+			it('Should CREATE User', () => {
+				const emailPrefix = genRandomString(5);
+				const dto: SignupDto = {
+					roleId: 3,
+					firstName: genRandomString(),
+					lastName: genRandomString(),
+					authAddress: `${emailPrefix}@mailinator.com`,
+					authType: 'Email',
+				};
 				return pactum
 					.spec()
 					.post('/users')
 					.withHeaders({ Authorization: `Bearer $S{userToken}` })
-					.withBody(userDto)
+					.withBody(dto)
 					.expectStatus(200)
 					.stores('createdUser', 'id');
 			});
 
-			it('Should update a user', () => {
+			it('Should UPDATE User', () => {
 				const createdUser = `$S{createdUser}`;
 				return pactum
 					.spec()
@@ -219,7 +227,7 @@ describe('App e2e', () => {
 					.expectStatus(200);
 			});
 
-			it('Should NOT delete a user', () => {
+			it('Should NOT DELETE User', () => {
 				const createdUser = `$S{createdUser}`;
 				return pactum
 					.spec()
@@ -228,7 +236,7 @@ describe('App e2e', () => {
 					.expectStatus(401);
 			});
 
-			it('Should create a permission', () => {
+			it('Should CREATE permission', () => {
 				return pactum
 					.spec()
 					.post('/roles/perm')
@@ -238,7 +246,7 @@ describe('App e2e', () => {
 					.stores('createdPermId', 'id');
 			});
 
-			it('Should update a permission', () => {
+			it('Should UPDATE Permission', () => {
 				const createdPermId = `$S{createdPermId}`;
 				return pactum
 					.spec()
@@ -251,7 +259,7 @@ describe('App e2e', () => {
 					.inspect();
 			});
 
-			it('Should delete a permission', () => {
+			it('Should DELETE Permission', () => {
 				const createdPermId = `$S{createdPermId}`;
 				return pactum
 					.spec()
@@ -262,7 +270,7 @@ describe('App e2e', () => {
 		});
 
 		// ===========User Test Cases===============
-		describe.only('User test cases', () => {
+		describe('User test cases', () => {
 			const email = 'user@mailinator.com';
 			it('Should SEND OTP', () => {
 				return pactum
@@ -378,6 +386,19 @@ describe('App e2e', () => {
 		});
 	});
 });
+
+function genRandomString(length: number = 8) {
+	let result = '';
+	const characters =
+		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	const charactersLength = characters.length;
+	let counter = 0;
+	while (counter < length) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		counter += 1;
+	}
+	return result;
+}
 
 // Note:
 // - Clear DB
