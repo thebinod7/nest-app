@@ -6,7 +6,8 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import { SignupDto } from 'src/auth/dto';
 import { CreatePermissionDto } from 'src/roles/dto';
 
-const APP_URL = 'http://localhost:3333';
+const PORT = 4000;
+const APP_URL = `http://localhost:${PORT}`;
 
 describe('App e2e', () => {
 	let app: INestApplication;
@@ -19,7 +20,7 @@ describe('App e2e', () => {
 		app = (await moduleRef).createNestApplication();
 		app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 		await app.init();
-		await app.listen(3333);
+		await app.listen(PORT);
 
 		prisma = app.get(PrismaService);
 		// await prisma.cleanDb();
@@ -415,9 +416,3 @@ function genRandomString(length: number = 8) {
 	}
 	return result;
 }
-
-// Steps:
-// 1. Clear DB (docker compose DOWN then UP)
-// 2. Run npx prisma migrate dev
-// 3. Run npx prisma db seed
-// 4. Run yarn test:dev
